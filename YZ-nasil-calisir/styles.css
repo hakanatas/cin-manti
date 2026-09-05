@@ -1,8 +1,8 @@
 /* Küçük Dersler — Yapay zeka nasıl çalışır?  (shares the Dumpling Club look) */
 
-@font-face { font-family: 'Fraunces'; src: url('../../assets/fonts/Fraunces-Variable.ttf') format('truetype'); font-weight: 100 900; font-style: normal; font-display: swap; }
-@font-face { font-family: 'Fraunces'; src: url('../../assets/fonts/Fraunces-Italic-Variable.ttf') format('truetype'); font-weight: 100 900; font-style: italic; font-display: swap; }
-@font-face { font-family: 'Instrument Sans'; src: url('../../assets/fonts/InstrumentSans-Variable.ttf') format('truetype'); font-weight: 400 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Fraunces'; src: url('../assets/fonts/Fraunces-Variable.ttf') format('truetype'); font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Fraunces'; src: url('../assets/fonts/Fraunces-Italic-Variable.ttf') format('truetype'); font-weight: 100 900; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Instrument Sans'; src: url('../assets/fonts/InstrumentSans-Variable.ttf') format('truetype'); font-weight: 400 700; font-style: normal; font-display: swap; }
 
 :root {
   --cream: #f5eee3;
