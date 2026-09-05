@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>The Dumpling Club — Small bites. Big feelings.</title>
+  <meta name="description" content="A cozy interactive 3D steamer of dumplings. Click one to pick it up, dip it in soy sauce, and take a bite." />
+  <meta name="theme-color" content="#f5eee3" />
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="./assets/fonts/Fraunces-Variable.ttf" as="font" type="font/ttf" crossorigin />
+  <link rel="preload" href="./assets/fonts/InstrumentSans-Variable.ttf" as="font" type="font/ttf" crossorigin />
+  <link rel="stylesheet" href="./css/styles.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three/three.module.js",
+        "three/addons/": "./vendor/three/addons/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <canvas id="stage" tabindex="0" role="application" aria-label="Interactive 3D dumpling steamer. Use the arrow keys to choose a dumpling and Enter to taste it."></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <div class="loading" id="loading" aria-live="polite">
+    <div class="loading__mark">The Dumpling Club</div>
+    <div class="loading__bar"><span id="loading-bar"></span></div>
+    <p class="loading__text" id="loading-text">Steaming…</p>
+  </div>
+
+  <header class="topbar ui">
+    <a class="brand" href="./">The Dumpling Club</a>
+    <div class="topbar__right">
+      <button class="pill" id="btn-hide-ui" type="button" title="Hide the interface (H)">Hide interface</button>
+    </div>
+  </header>
+
+  <section class="hero ui">
+    <p class="eyebrow">A tiny steamer of feelings</p>
+    <h1 class="headline">Small bites.<br /><em>Big feelings.</em></h1>
+    <p class="lede">A cozy little steamer, five dumplings with opinions, and one pair of chopsticks. Click a dumpling to pick it up, dip it in soy sauce, and take a bite.</p>
+    <p class="hint" id="hint"><span class="hint__key">Tip</span> Hover to say hello. Click to taste.</p>
+  </section>
+
+  <div class="dock ui" id="dock" role="region" aria-label="Controls">
+    <div class="dock__group">
+      <span class="dock__label">Portion</span>
+      <div class="seg" role="radiogroup" aria-label="Portion size">
+        <button type="button" class="seg__btn" role="radio" data-portion="3" aria-checked="false">3</button>
+        <button type="button" class="seg__btn" role="radio" data-portion="5" aria-checked="true">5</button>
+        <button type="button" class="seg__btn" role="radio" data-portion="8" aria-checked="false">8</button>
+      </div>
+    </div>
+    <div class="dock__group">
+      <span class="dock__label">Serving</span>
+      <div class="seg" role="radiogroup" aria-label="Serving dish">
+        <button type="button" class="seg__btn" role="radio" data-serving="steamer" aria-checked="true"><span class="long">Bamboo steamer</span><span class="short">Steamer</span></button>
+        <button type="button" class="seg__btn" role="radio" data-serving="plate" aria-checked="false"><span class="long">Porcelain plate</span><span class="short">Plate</span></button>
+      </div>
+    </div>
+    <div class="dock__group dock__group--toggles" role="group" aria-label="Toggles">
+      <button type="button" class="toggle" data-toggle="steam" aria-pressed="true"><i></i>Steam</button>
+      <button type="button" class="toggle" data-toggle="sauce" aria-pressed="true"><i></i>Sauce</button>
+      <button type="button" class="toggle" data-toggle="sound" aria-pressed="false"><i></i>Sound</button>
+      <button type="button" class="toggle" data-toggle="autoplay" aria-pressed="false"><i></i>Autoplay</button>
+    </div>
+    <div class="dock__group dock__group--actions">
+      <button type="button" class="btn btn--accent" id="btn-boing" title="Make everyone hop (B)">Boing!</button>
+      <button type="button" class="btn" id="btn-refill" title="Refill the steamer (R)">Refill</button>
+      <button type="button" class="btn btn--record" id="btn-record" title="Record a short tasting as a square video"><span class="rec-dot" aria-hidden="true"></span>Record a bite</button>
+    </div>
+  </div>
+
+  <p class="keys ui" id="keys" aria-hidden="true">
+    <kbd>←</kbd><kbd>→</kbd> choose · <kbd>↵</kbd> taste · <kbd>B</kbd> boing · <kbd>R</kbd> refill · <kbd>A</kbd> autoplay · <kbd>M</kbd> sound · <kbd>H</kbd> hide
+  </p>
+
+  <button type="button" class="reveal" id="btn-show-ui" hidden title="Show the interface (H)">Show interface</button>
+  <div class="label" id="hover-label" hidden aria-hidden="true"></div>
+  <div class="sr-only" id="a11y-list" role="group" aria-label="Dumplings"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="recorder" id="recorder" hidden>
+    <div class="recorder__frame" id="recorder-frame" aria-hidden="true">
+      <div class="recorder__badge"><span class="rec-dot"></span> REC <span id="rec-time">00:00</span></div>
+      <div class="recorder__meta">1080 × 1080 · 30 fps</div>
+    </div>
+    <div class="recorder__result" id="recorder-result" hidden>
+      <h2 class="recorder__title">Your bite is ready.</h2>
+      <video id="rec-video" controls playsinline></video>
+      <p class="recorder__note" id="rec-note"></p>
+      <div class="recorder__actions">
+        <a class="btn btn--accent" id="rec-download" download="the-dumpling-club-bite.mp4" href="#">Save MP4</a>
+        <button type="button" class="btn" id="rec-again">Record again</button>
+        <button type="button" class="btn btn--ghost" id="rec-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <noscript><p class="noscript">The Dumpling Club needs JavaScript and WebGL to steam.</p></noscript>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
