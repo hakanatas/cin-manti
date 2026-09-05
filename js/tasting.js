@@ -75,7 +75,7 @@ export class Tasting {
 
   presentPose(gap) {
     const cam = this.camera;
-    const position = new THREE.Vector3(0.42, -0.08, -4.3).applyMatrix4(cam.matrixWorld);
+    const position = new THREE.Vector3(0.42, 0.06, -4.3).applyMatrix4(cam.matrixWorld);
     const handDir = new THREE.Vector3(0.9, -0.42, 0.42).applyQuaternion(cam.quaternion).normalize();
     const camUp = new THREE.Vector3(0, 1, 0).applyQuaternion(cam.quaternion);
     return { position, quaternion: chopstickQuaternion(handDir, camUp), gap };
@@ -100,9 +100,10 @@ export class Tasting {
     const ctx = this.ctx;
     const T = this.tweens;
     const opts = this.getOptions();
-    const s = d.baseScale;
     const H = d.geometryHeight;
-    const gripGap = 2 * 0.95 * s;
+    // read the scale live: the dumpling may still be popping in
+    const S = () => d.baseScale;
+    const gripGap = 2 * 0.95 * S();
     const centerOf = () => d.localToWorld(new THREE.Vector3(0, H * 0.58, 0));
     const qPick = this.pickQuaternion();
     const sauce = this.bowl.userData.sauce;
@@ -119,7 +120,7 @@ export class Tasting {
       }
 
       // 1. approach and hover above the chosen dumpling
-      await this.moveTo(() => ({ position: centerOf().add(new THREE.Vector3(0, 0.55 + 0.9 * s, 0)), quaternion: qPick, gap: 1.35 }), 0.75, Ease.inOutCubic);
+      await this.moveTo(() => ({ position: centerOf().add(new THREE.Vector3(0, 0.55 + 0.9 * S(), 0)), quaternion: qPick, gap: 1.35 }), 0.75, Ease.inOutCubic);
       // 2. descend and grip
       await this.moveTo(() => ({ position: centerOf(), quaternion: qPick, gap: 1.35 }), 0.32, Ease.inOutQuad);
       await this.moveTo(() => ({ position: centerOf(), quaternion: qPick, gap: gripGap }), 0.16, Ease.outCubic);
@@ -143,10 +144,10 @@ export class Tasting {
       if (opts.sauce) {
         // 4. carry to the bowl
         d.setExpression('joy', 3.5);
-        const aboveBowl = bowlCenter.clone().add(new THREE.Vector3(0, 0.5 * H * s + 0.62, 0));
+        const aboveBowl = bowlCenter.clone().add(new THREE.Vector3(0, 0.5 * H * S() + 0.62, 0));
         await this.moveTo(() => ({ position: aboveBowl, quaternion: qPick, gap: gripGap }), 0.7, Ease.inOutCubic);
         // 5. dip
-        const dipTips = bowlCenter.clone().add(new THREE.Vector3(0, 0.5 * H * s - 0.24 * H * s, 0));
+        const dipTips = bowlCenter.clone().add(new THREE.Vector3(0, 0.58 * H * S() - 0.27 * H * S(), 0));
         let splashed = false;
         await this.moveTo(
           () => ({ position: dipTips, quaternion: qPick, gap: gripGap }),
@@ -155,7 +156,7 @@ export class Tasting {
           () => {
             const bottomY = d.position.y;
             if (bottomY < sauceWorldY) {
-              d.setDip((sauceWorldY - bottomY) / s);
+              d.setDip((sauceWorldY - bottomY) / S());
               if (!splashed) {
                 splashed = true;
                 this.sound.play('dip');
@@ -181,7 +182,7 @@ export class Tasting {
             const a = t * Math.PI * 2;
             this.chopsticks.position.set(dipTips.x + Math.sin(a) * 0.02, dipTips.y - Math.sin(t * Math.PI) * 0.015, dipTips.z + Math.cos(a) * 0.02);
             this.syncHeld();
-            d.setDip((sauceWorldY - d.position.y) / s);
+            d.setDip((sauceWorldY - d.position.y) / S());
           },
           Ease.inOutSine
         );
@@ -197,7 +198,7 @@ export class Tasting {
             dripClock += 1;
             if (raw > 0.2 && raw < 0.85 && dripClock % 3 === 0) {
               this.particles.emit('droplet', {
-                position: new THREE.Vector3(d.position.x + rand(-0.25, 0.25) * s, d.position.y + 0.02, d.position.z + rand(-0.25, 0.25) * s),
+                position: new THREE.Vector3(d.position.x + rand(-0.25, 0.25) * S(), d.position.y + 0.02, d.position.z + rand(-0.25, 0.25) * S()),
                 count: 1,
                 speed: 0.15,
                 size: 0.014,
@@ -218,7 +219,7 @@ export class Tasting {
       const presentRotation = () => {
         const camPos = this.camera.position;
         const yaw = Math.atan2(camPos.x - d.position.x, camPos.z - d.position.z);
-        targetRot.set(0.16, yaw - 0.22, -0.1);
+        targetRot.set(0.06, yaw - 0.12, -0.08);
         return targetRot;
       };
       let startYaw = startRot.y;
@@ -256,7 +257,7 @@ export class Tasting {
         count: 11,
         speed: 0.9,
         spread: 0.05,
-        size: 0.022 * s * 2,
+        size: 0.022 * S() * 2,
         direction: toCam.clone().add(new THREE.Vector3(0, -0.8, 0)).normalize(),
         floorAt: (x, z) => this.floorAt(x, z),
       });
@@ -289,7 +290,7 @@ export class Tasting {
 
       // 9. gulp — the rest disappears
       this.sound.play('gulp');
-      const s0 = s;
+      const s0 = S();
       await T.run(
         ctx,
         0.3,

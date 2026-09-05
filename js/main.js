@@ -258,11 +258,13 @@ function serve(count, animate = true) {
     inPlay.forEach((d, i) => {
       const s = preset.scale;
       d.baseScale = 0.001;
+      d.popping = true;
       tweens
         .wait(null, 0.06 * i)
         .then(() => tweens.run(null, 0.5, (t) => (d.baseScale = Math.max(0.001, s * t)), Ease.outBack))
         .then(() => {
           d.baseScale = s;
+          d.popping = false;
           d.squashVel -= 1.0;
         });
     });
@@ -319,7 +321,7 @@ function floorAt(x, z) {
 let tasting;
 
 async function taste(d) {
-  if (!d || !d.alive || tasting.busy || state.recording) return;
+  if (!d || !d.alive || d.popping || tasting.busy || state.recording) return;
   sound.unlock();
   hideHover();
   dom.hint.style.opacity = '0';
@@ -671,8 +673,8 @@ async function recordBite() {
   recStart = performance.now();
   recAcc = 0;
   await tweens.wait(null, 0.8);
-  const list = alive();
-  const d = pick(list);
+  const list = alive().filter((d) => !d.popping);
+  const d = pick(list.length ? list : alive());
   await tasting.run(d, others(d));
   refreshA11y();
   await tweens.wait(null, 0.75);
@@ -784,7 +786,7 @@ function frame() {
 
   // bubble and caption float in camera space
   if (bubble.visible) {
-    bubble.position.copy(tmp2.set(0.3, 0.62, -4.3).applyMatrix4(camera.matrixWorld));
+    bubble.position.copy(tmp2.set(0.3, 0.56, -4.3).applyMatrix4(camera.matrixWorld));
   }
   bubble.update(dt);
   if (caption.visible) {
