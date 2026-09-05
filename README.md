@@ -69,6 +69,18 @@ largest mesh, centres it, puts its bottom at `y = 0`, scales it to a radius of 1
 and places the face on the +Z side. If the file has no vertex colours the dough
 colour from `js/config.js` is used instead.
 
+## Küçük Dersler (lessons)
+
+The same visual language powers a growing set of interactive lessons under
+`dersler/`. The first one, **"Yapay zeka nasıl çalışır?"** (How does AI
+work?, in Turkish), lives at `dersler/yapay-zeka-nasil-calisir/` and trains a
+real tiny neural network in the browser while you watch: data on a tablecloth,
+an abacus-style network with weighted connections, signal pulses, one learning
+step with backpropagation, full training with a live decision boundary, a
+"try it yourself" probe, and a next-word demo for large language models.
+
+Open it at `/dersler/yapay-zeka-nasil-calisir/` from the same static server.
+
 ## Third-party
 
 - Three.js r170 (MIT) — `vendor/three/` (see `vendor/three/LICENSE`)

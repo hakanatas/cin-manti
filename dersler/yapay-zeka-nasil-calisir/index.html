@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Yapay zeka nasıl çalışır? — Küçük Dersler</title>
+  <meta name="description" content="Minik bir mutfakta, gerçek bir sinir ağını eğiterek yapay zekanın nasıl öğrendiğini keşfet." />
+  <meta name="theme-color" content="#f5eee3" />
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="../../assets/fonts/Fraunces-Variable.ttf" as="font" type="font/ttf" crossorigin />
+  <link rel="preload" href="../../assets/fonts/InstrumentSans-Variable.ttf" as="font" type="font/ttf" crossorigin />
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "../../vendor/three/three.module.js",
+        "three/addons/": "../../vendor/three/addons/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <canvas id="stage" tabindex="0" role="application" aria-label="Etkileşimli 3B ders sahnesi. Sol ve sağ ok tuşlarıyla bölümler arasında geçin."></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="tags" id="tags" aria-hidden="true"></div>
+
+  <div class="loading" id="loading" aria-live="polite">
+    <div class="loading__mark">Küçük Dersler</div>
+    <div class="loading__bar"><span id="loading-bar"></span></div>
+    <p class="loading__text" id="loading-text">Masa kuruluyor…</p>
+  </div>
+
+  <header class="topbar ui">
+    <a class="brand" href="../../">Küçük Dersler</a>
+    <div class="topbar__right">
+      <a class="pill pill--link" href="../../" title="The Dumpling Club'a dön">Dumpling Club</a>
+      <button class="pill" id="btn-hide-ui" type="button" title="Arayüzü gizle (H)">Arayüzü gizle</button>
+    </div>
+  </header>
+
+  <section class="hero ui">
+    <p class="eyebrow">Ders 01 · Yapay zeka</p>
+    <h1 class="headline">Yapay zeka<br />nasıl çalışır?</h1>
+    <p class="lede"><em>Tahmin ederek öğrenir.</em> Minik bir mutfakta gerçek bir sinir ağı eğitip nasıl olduğunu kendi gözlerinle gör.</p>
+  </section>
+
+  <aside class="lesson ui" id="lesson" aria-live="polite">
+    <div class="lesson__head">
+      <span class="lesson__count" id="lesson-count">01 / 08</span>
+      <button type="button" class="lesson__collapse" id="btn-collapse" aria-expanded="true" aria-controls="lesson-body">Küçült</button>
+    </div>
+    <div id="lesson-body">
+      <h2 class="lesson__title" id="lesson-title"></h2>
+      <div class="lesson__text" id="lesson-text"></div>
+      <div class="lesson__stats" id="lesson-stats" hidden>
+        <div class="stat"><span class="stat__label">Adım</span><span class="stat__value" id="stat-steps">0</span></div>
+        <div class="stat"><span class="stat__label">Kayıp</span><span class="stat__value" id="stat-loss">–</span></div>
+        <div class="stat"><span class="stat__label">Doğruluk</span><span class="stat__value" id="stat-acc">–</span></div>
+        <canvas class="spark" id="spark" width="220" height="44" aria-label="Kayıp eğrisi"></canvas>
+      </div>
+      <div class="lesson__sliders" id="lesson-sliders" hidden>
+        <label>Şeker <input type="range" id="sl-sugar" min="0" max="100" value="62" /></label>
+        <label>Tuz <input type="range" id="sl-salt" min="0" max="100" value="45" /></label>
+      </div>
+      <p class="readout" id="readout" hidden></p>
+      <div class="lesson__actions">
+        <button type="button" class="btn btn--accent" id="btn-action" hidden></button>
+        <button type="button" class="btn" id="btn-action2" hidden></button>
+      </div>
+    </div>
+  </aside>
+
+  <nav class="dock ui" id="dock" aria-label="Bölümler">
+    <button type="button" class="btn btn--ghost" id="btn-prev" title="Önceki bölüm (←)">← Önceki</button>
+    <ol class="dots" id="dots"></ol>
+    <button type="button" class="btn btn--accent" id="btn-next" title="Sonraki bölüm (→)">Sonraki →</button>
+    <span class="dock__sep"></span>
+    <button type="button" class="toggle" data-toggle="autoplay" aria-pressed="false" title="Otomatik oynat"><i></i><span>Otomatik</span></button>
+    <button type="button" class="toggle" data-toggle="sound" aria-pressed="false" title="Ses"><i></i><span>Ses</span></button>
+  </nav>
+
+  <p class="keys ui" id="keys" aria-hidden="true">
+    <kbd>←</kbd><kbd>→</kbd> bölüm · <kbd>␣</kbd> eylem · <kbd>E</kbd> eğit · <kbd>R</kbd> sıfırla · <kbd>H</kbd> gizle
+  </p>
+
+  <button type="button" class="reveal" id="btn-show-ui" hidden>Arayüzü göster</button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript><p class="noscript">Bu ders JavaScript ve WebGL gerektirir.</p></noscript>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
