@@ -10,6 +10,12 @@ sauce, brings it to the camera for a bite, and the others react.
 Everything is local: no build step, no bundler, no CDN. Open it with any static
 file server.
 
+## Live
+
+Published with GitHub Pages: <https://hakanatas.github.io/cin-manti/>
+(the lesson is at <https://hakanatas.github.io/cin-manti/YZ-nasil-calisir/>).
+The workflow in `.github/workflows/pages.yml` redeploys on every push.
+
 ## Run it
 
 ```bash
