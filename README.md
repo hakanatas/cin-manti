@@ -77,13 +77,16 @@ colour from `js/config.js` is used instead.
 
 ## Küçük Dersler (lessons)
 
-The same visual language powers a growing set of interactive lessons under
-`YZ-nasil-calisir/`. The first one, **"Yapay zeka nasıl çalışır?"** (How does AI
-work?, in Turkish), lives at `YZ-nasil-calisir/` and trains a
-real tiny neural network in the browser while you watch: data on a tablecloth,
-an abacus-style network with weighted connections, signal pulses, one learning
-step with backpropagation, full training with a live decision boundary, a
-"try it yourself" probe, and a next-word demo for large language models.
+The same visual language powers a growing set of interactive lessons. The
+first one, **"Yapay zeka nasıl çalışır?"** (How does AI work?, in Turkish,
+for ages 8–14), lives at `YZ-nasil-calisir/`. Bıdık, an apprentice robot
+chef, learns to tell sweet dumplings from salty ones while a real 2-6-1
+neural network trains in the browser: dumplings on a tablecloth, helpers
+with faces connected by weighted strings, guess-before-the-robot games, one
+learning step with backpropagation, full training with a live decision
+boundary, a test with a brand-new dumpling, a next-word demo for chatbots,
+and a three-question quiz. Every chapter carries a collapsible teacher note
+with the real terminology.
 
 Open it at `/YZ-nasil-calisir/` from the same static server.
 

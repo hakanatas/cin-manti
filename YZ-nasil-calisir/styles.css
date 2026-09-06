@@ -252,3 +252,72 @@ body.ui-hidden .reveal { display: inline-flex; }
 @media (prefers-reduced-motion: reduce) {
   .ui, .btn, .toast, .loading, .tag { transition-duration: 0.01ms !important; }
 }
+
+/* ---- kids edition ------------------------------------------------------- */
+:root { --sweet: #d9647e; --salty: #c58a2b; }
+.salty { color: var(--salty); }
+.salty2 { color: var(--terracotta); font-weight: 600; }
+.lesson__text p { font-size: 15px; line-height: 1.55; }
+.lesson__title { font-size: 25px; }
+.teacher { margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 6px; font-size: 12.5px; color: var(--ink-soft); }
+.teacher summary { cursor: pointer; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 10.5px; color: var(--terracotta-deep); }
+.teacher p { margin: 6px 0 0; font-size: 12.5px; }
+.tag--bubble {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  background: #fffaf1;
+  border: 1px solid rgba(196, 98, 61, 0.45);
+  padding: 8px 14px;
+  border-radius: 16px;
+  max-width: 260px;
+  white-space: normal;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.tag--bubble::after { content: ''; position: absolute; left: 50%; bottom: -7px; width: 12px; height: 12px; background: #fffaf1; border-right: 1px solid rgba(196, 98, 61, 0.45); border-bottom: 1px solid rgba(196, 98, 61, 0.45); transform: translateX(-50%) rotate(45deg); }
+.guess { display: flex; gap: 8px; margin-top: 10px; }
+.guess[hidden] { display: none; }
+.btn--sweet { background: var(--sweet); border-color: var(--sweet); color: #fff; flex: 1; justify-content: center; }
+.btn--salty { background: var(--salty); border-color: var(--salty); color: #fff; flex: 1; justify-content: center; }
+.btn--sweet:hover { background: #c4536d; border-color: #c4536d; }
+.btn--salty:hover { background: #a97322; border-color: #a97322; }
+.btn--big { font-size: 16px; padding: 12px 22px; }
+.score { font-size: 12px; font-weight: 600; color: var(--ink-soft); padding: 3px 9px; border-radius: 999px; background: rgba(43, 33, 27, 0.06); }
+.score b { color: var(--terracotta-deep); }
+.score[hidden] { display: none; }
+.quiz__item { margin: 10px 0 12px; }
+.quiz__q { margin: 0 0 6px; font-weight: 600; }
+.quiz__opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.quiz__opts .btn { font-size: 13px; padding: 7px 12px; }
+.quiz__item.is-done .btn { pointer-events: none; opacity: 0.6; }
+.quiz__item.is-done .btn.is-right { opacity: 1; background: #3f8a5b; border-color: #3f8a5b; color: #fff; }
+.quiz__item.is-done .btn.is-wrong { opacity: 1; background: var(--terracotta); border-color: var(--terracotta); color: #fff; }
+.quiz__why { margin: 6px 0 0; font-size: 13px; color: var(--ink-soft); }
+.intro, .finish { position: fixed; inset: 0; z-index: 30; display: grid; place-items: end start; padding: 0 28px calc(28px + env(safe-area-inset-bottom)); pointer-events: none; }
+@media (max-width: 900px) { .intro, .finish { place-items: end center; padding: 0 12px calc(16px + env(safe-area-inset-bottom)); } }
+.intro[hidden], .finish[hidden] { display: none; }
+.intro__card {
+  pointer-events: auto;
+  width: min(440px, 100%);
+  padding: 22px 24px;
+  border-radius: 22px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-align: center;
+}
+.intro__title { margin: 0 0 8px; font-family: var(--serif); font-variation-settings: 'SOFT' 100, 'WONK' 1, 'opsz' 72; font-weight: 500; font-size: 28px; letter-spacing: -0.02em; }
+.intro__text { margin: 0 0 16px; font-size: 15px; color: var(--ink-soft); }
+.intro__actions { display: flex; justify-content: center; gap: 8px; }
+body.is-intro .lesson, body.is-intro .dock, body.is-intro .keys, body.is-intro .credit, body.is-intro .tags { opacity: 0; visibility: hidden; pointer-events: none; }
+.finish { place-items: end center; }
+.finish .intro__card { width: min(520px, 100%); }
+@media (max-width: 900px) {
+  .intro__title { font-size: 22px; }
+  .intro__text { font-size: 14px; }
+  .tag--bubble { font-size: 13px; max-width: 200px; }
+}

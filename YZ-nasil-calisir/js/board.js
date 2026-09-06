@@ -1,11 +1,13 @@
 import * as THREE from 'three';
+import { createDumplingGeometry } from '../../js/dumpling-shape.js';
+import { Face } from './face.js';
 
 /**
  * The "feature space" tablecloth: a tiled square where each dish sits at
  * (sugar, salt). Tiles tint with the network's prediction once it has learnt.
  */
 export class Board extends THREE.Group {
-  constructor({ size = 3.0, tiles = 26, palette }) {
+  constructor({ size = 3.0, tiles = 26, palette, mouths }) {
     super();
     this.name = 'board';
     this.size = size;
@@ -23,6 +25,8 @@ export class Board extends THREE.Group {
     this.baseColor = new THREE.Color(palette.creamDeep);
     this.sweet = new THREE.Color(palette.sweet);
     this.salty = new THREE.Color(palette.salty);
+    this.sweetDough = new THREE.Color(palette.sweet).lerp(new THREE.Color('#ffffff'), 0.3);
+    this.saltyDough = new THREE.Color(palette.salty).lerp(new THREE.Color('#ffffff'), 0.3);
     this.predictions = new Float32Array(tiles * tiles).fill(0.5);
     for (let j = 0; j < tiles; j++) {
       for (let i = 0; i < tiles; i++) {
@@ -51,9 +55,12 @@ export class Board extends THREE.Group {
       new THREE.MeshPhysicalMaterial({ color: palette.porcelain, roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.15 }),
       maxDishes
     );
+    const dumplingGeo = createDumplingGeometry(THREE, { around: 44, down: 26 });
+    dumplingGeo.deleteAttribute('color');
+    dumplingGeo.scale(0.075, 0.075, 0.075);
     this.marbleMesh = new THREE.InstancedMesh(
-      new THREE.SphereGeometry(0.052, 18, 12),
-      new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: 0.35, clearcoat: 0.8, clearcoatRoughness: 0.2 }),
+      dumplingGeo,
+      new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: 0.6, sheen: 0.4, sheenColor: new THREE.Color('#ffd7b3') }),
       maxDishes
     );
     this.plateMesh.castShadow = true;
@@ -70,9 +77,14 @@ export class Board extends THREE.Group {
     this.probe = new THREE.Group();
     const probePlate = new THREE.Mesh(this.plateMesh.geometry, this.plateMesh.material);
     probePlate.scale.setScalar(1.25);
-    const probeMarble = new THREE.Mesh(this.marbleMesh.geometry, new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: 0.3, clearcoat: 1 }));
-    probeMarble.position.y = 0.075;
-    probeMarble.scale.setScalar(1.15);
+    const probeMarble = new THREE.Mesh(this.marbleMesh.geometry, new THREE.MeshPhysicalMaterial({ color: '#ffffff', roughness: 0.6, sheen: 0.4, sheenColor: new THREE.Color('#ffd7b3') }));
+    probeMarble.position.y = 0.03;
+    probeMarble.scale.setScalar(1.6);
+    const probeFace = new Face({ radius: 0.075 * 0.98, mouths, palette, cheek: 0.7, blink: [2, 5] });
+    probeFace.position.y = 0.075 * 0.82;
+    probeFace.setMood('curious');
+    probeMarble.add(probeFace);
+    this.probeFace = probeFace;
     const ring = new THREE.Mesh(new THREE.TorusGeometry(0.16, 0.012, 8, 40), new THREE.MeshBasicMaterial({ color: palette.terracotta }));
     ring.rotation.x = -Math.PI / 2;
     ring.position.y = 0.03;
@@ -130,11 +142,12 @@ export class Board extends THREE.Group {
   setProbe(sugar, salt, p) {
     this.probe.visible = true;
     this.probe.position.copy(this.toLocal(sugar, salt, 0.0));
-    const c = new THREE.Color().lerpColors(this.salty, this.sweet, p);
+    const c = new THREE.Color().lerpColors(this.salty, this.sweet, p).lerp(new THREE.Color('#ffffff'), 0.25);
     this.probe.userData.marble.material.color.copy(c);
   }
 
   update(dt) {
+    if (this.probe.visible) this.probeFace.update(dt);
     // dish pop-ins
     const d = this.dummy;
     let count = 0;
@@ -149,10 +162,11 @@ export class Board extends THREE.Group {
       d.rotation.set(0, 0, 0);
       d.updateMatrix();
       this.plateMesh.setMatrixAt(count, d.matrix);
-      d.position.y = 0.03 + 0.06 * s;
+      d.position.y = 0.04;
+      d.rotation.y = (dish.x[0] * 7 + dish.x[1] * 5) % 1.2 - 0.6;
       d.updateMatrix();
       this.marbleMesh.setMatrixAt(count, d.matrix);
-      this.marbleMesh.setColorAt(count, dish.y ? this.sweet : this.salty);
+      this.marbleMesh.setColorAt(count, (dish.y ? this.sweetDough : this.saltyDough));
       count++;
     }
     this.plateMesh.count = count;

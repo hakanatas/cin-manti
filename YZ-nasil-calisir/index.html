@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Yapay zeka nasıl çalışır? — Küçük Dersler</title>
-  <meta name="description" content="Minik bir mutfakta, gerçek bir sinir ağını eğiterek yapay zekanın nasıl öğrendiğini keşfet." />
+  <meta name="description" content="Çırak robot aşçı Bıdık ile yapay zekanın nasıl öğrendiğini keşfet: tahmin et, yanıl, düzelt, tekrar. İlkokul ve ortaokul için etkileşimli ders." />
   <meta name="theme-color" content="#f5eee3" />
   <meta property="og:title" content="Yapay zeka nasıl çalışır?" />
-  <meta property="og:description" content="Minik bir mutfakta gerçek bir sinir ağı eğitip yapay zekanın nasıl öğrendiğini kendi gözlerinle gör. Sekiz kısa bölüm." />
+  <meta property="og:description" content="Çırak robot aşçı Bıdık ile yapay zekanın nasıl öğrendiğini keşfet. Sekiz kısa bölüm, oyunlar ve mini sınav." />
   <meta property="og:type" content="website" />
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
   <link rel="preload" href="../assets/fonts/Fraunces-Variable.ttf" as="font" type="font/ttf" crossorigin />
@@ -30,7 +30,7 @@
   <div class="loading" id="loading" aria-live="polite">
     <div class="loading__mark">Küçük Dersler</div>
     <div class="loading__bar"><span id="loading-bar"></span></div>
-    <p class="loading__text" id="loading-text">Masa kuruluyor…</p>
+    <p class="loading__text" id="loading-text">Bıdık mutfağa geliyor…</p>
   </div>
 
   <header class="topbar ui">
@@ -43,28 +43,53 @@
   <section class="hero ui">
     <p class="eyebrow">Ders 01 · Yapay zeka</p>
     <h1 class="headline">Yapay zeka<br />nasıl çalışır?</h1>
-    <p class="lede"><em>Tahmin ederek öğrenir.</em> Minik bir mutfakta gerçek bir sinir ağı eğitip nasıl olduğunu kendi gözlerinle gör. Sekiz kısa bölüm, beş dakika.</p>
+    <p class="lede"><em>Tahmin ederek öğrenir.</em> Çırak robot aşçı Bıdık ile birlikte öğren.</p>
   </section>
+
+  <div class="intro" id="intro">
+    <div class="intro__card">
+      <p class="eyebrow">Merhaba!</p>
+      <h2 class="intro__title">Ben Bıdık, çırak robot aşçıyım.</h2>
+      <p class="intro__text">Bir derdim var: tatlı mantıyı tuzlu mantıdan ayıramıyorum. Öğrenmeme yardım eder misin? Sekiz kısa bölüm, birkaç oyun ve sonunda minik bir sınav var.</p>
+      <button type="button" class="btn btn--accent btn--big" id="btn-start">Başlayalım!</button>
+    </div>
+  </div>
+
+  <div class="finish" id="finish" hidden>
+    <div class="intro__card">
+      <p class="eyebrow">Tebrikler</p>
+      <h2 class="intro__title">Dersi bitirdin!</h2>
+      <p class="intro__text" id="finish-text"></p>
+      <div class="intro__actions">
+        <button type="button" class="btn btn--accent" id="btn-again">Baştan oyna</button>
+      </div>
+    </div>
+  </div>
 
   <aside class="lesson ui" id="lesson" aria-live="polite">
     <div class="lesson__head">
       <span class="lesson__count" id="lesson-count">01 / 08</span>
+      <span class="score" id="score" hidden></span>
       <button type="button" class="lesson__collapse" id="btn-collapse" aria-expanded="true" aria-controls="lesson-body">Küçült</button>
     </div>
     <div id="lesson-body">
       <h2 class="lesson__title" id="lesson-title"></h2>
       <div class="lesson__text" id="lesson-text"></div>
       <div class="lesson__stats" id="lesson-stats" hidden>
-        <div class="stat"><span class="stat__label">Adım</span><span class="stat__value" id="stat-steps">0</span></div>
-        <div class="stat"><span class="stat__label">Kayıp</span><span class="stat__value" id="stat-loss">–</span></div>
-        <div class="stat"><span class="stat__label">Doğruluk</span><span class="stat__value" id="stat-acc">–</span></div>
-        <canvas class="spark" id="spark" width="220" height="44" aria-label="Kayıp eğrisi"></canvas>
+        <div class="stat"><span class="stat__label">Bakış</span><span class="stat__value" id="stat-steps">0</span></div>
+        <div class="stat"><span class="stat__label">Hata puanı</span><span class="stat__value" id="stat-loss">–</span></div>
+        <div class="stat"><span class="stat__label">Doğru bilme</span><span class="stat__value" id="stat-acc">–</span></div>
+        <canvas class="spark" id="spark" width="220" height="44" aria-label="Hata puanı eğrisi"></canvas>
       </div>
       <div class="lesson__sliders" id="lesson-sliders" hidden>
         <label>Şeker <input type="range" id="sl-sugar" min="0" max="100" value="62" /></label>
         <label>Tuz <input type="range" id="sl-salt" min="0" max="100" value="45" /></label>
       </div>
       <p class="readout" id="readout" hidden></p>
+      <div class="guess" id="guess" hidden>
+        <button type="button" class="btn btn--sweet" id="guess-sweet">Tatlı</button>
+        <button type="button" class="btn btn--salty" id="guess-salty">Tuzlu</button>
+      </div>
       <div class="lesson__actions">
         <button type="button" class="btn btn--accent" id="btn-action" hidden></button>
         <button type="button" class="btn" id="btn-action2" hidden></button>
@@ -82,13 +107,13 @@
   </nav>
 
   <p class="keys ui" id="keys" aria-hidden="true">
-    <kbd>←</kbd><kbd>→</kbd> bölüm · <kbd>␣</kbd> eylem · <kbd>E</kbd> eğit · <kbd>R</kbd> sıfırla · <kbd>H</kbd> gizle
+    <kbd>←</kbd><kbd>→</kbd> bölüm · <kbd>␣</kbd> eylem · <kbd>E</kbd> antrenman · <kbd>R</kbd> baştan · <kbd>H</kbd> gizle
   </p>
 
   <button type="button" class="reveal" id="btn-show-ui" hidden>Arayüzü göster</button>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
   <footer class="credit ui">Küçük Dersler · Tarayıcıda çalışan gerçek bir sinir ağı; hiçbir veri gönderilmez.</footer>
+
   <noscript><p class="noscript">Bu ders JavaScript ve WebGL gerektirir.</p></noscript>
   <script type="module" src="./js/main.js"></script>
 </body>

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Face } from './face.js';
 
 /**
  * A little abacus-like neural network: porcelain nodes on bamboo posts,
@@ -6,7 +7,7 @@ import * as THREE from 'three';
  * pulses that travel along them.
  */
 export class Network3D extends THREE.Group {
-  constructor({ net, palette, softDot }) {
+  constructor({ net, palette, softDot, mouths }) {
     super();
     this.name = 'network';
     this.net = net;
@@ -43,12 +44,18 @@ export class Network3D extends THREE.Group {
       new THREE.MeshPhysicalMaterial({ color: palette.porcelain, roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.12, emissive: '#000000' });
     const nodeGeo = new THREE.SphereGeometry(0.11, 28, 20);
     this.nodes = { input: [], hidden: [], output: null };
+    this.faces = [];
     const mk = (p, r = 1) => {
       const m = new THREE.Mesh(nodeGeo, this.nodeMat());
       m.position.copy(p);
       m.scale.setScalar(r);
       m.castShadow = true;
       this.add(m);
+      const face = new Face({ radius: 0.11, mouths, palette, cheek: 0.55, blink: [2, 6] });
+      face.setMood('calm');
+      m.add(face);
+      m.userData.face = face;
+      this.faces.push(face);
       return m;
     };
     this.nodes.input = this.pos.input.map((p) => mk(p));
@@ -166,10 +173,14 @@ export class Network3D extends THREE.Group {
 
     const warm = new THREE.Color('#ffb073');
     const apply = (mesh, g) => {
-      mesh.material.emissive.copy(warm).multiplyScalar(g * 0.75);
-      mesh.material.color.copy(new THREE.Color(this.palette.porcelain)).lerp(warm, g * 0.35);
+      mesh.material.emissive.copy(warm).multiplyScalar(g * 0.6);
+      mesh.material.color.copy(new THREE.Color(this.palette.porcelain)).lerp(warm, g * 0.3);
       const s = mesh.userData.base ?? (mesh.userData.base = mesh.scale.x);
       mesh.scale.setScalar(s * (1 + g * 0.18));
+      const face = mesh.userData.face;
+      const want = g > 0.55 ? 'surprised' : g > 0.22 ? 'happy' : 'calm';
+      if (face.mood !== want) face.setMood(want);
+      face.update(dt);
     };
     for (let i = 0; i < 2; i++) {
       this.glow.input[i] += (this.glowTarget.input[i] - this.glow.input[i]) * Math.min(1, dt * 6);
