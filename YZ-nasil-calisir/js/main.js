@@ -21,8 +21,8 @@ const PALETTE = {
   porcelain: '#fbf8f2',
   bamboo: '#d2a76d',
   bambooDark: '#a37543',
-  sweet: '#e0708a',
-  salty: '#e0a24a',
+  sweet: '#e2557e',
+  salty: '#f0b41f',
   slate: '#5b7c99',
   cheek: '#f0908e',
 };

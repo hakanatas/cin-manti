@@ -254,7 +254,7 @@ body.ui-hidden .reveal { display: inline-flex; }
 }
 
 /* ---- kids edition ------------------------------------------------------- */
-:root { --sweet: #d9647e; --salty: #c58a2b; }
+:root { --sweet: #d4467a; --salty: #c58f12; }
 .salty { color: var(--salty); }
 .salty2 { color: var(--terracotta); font-weight: 600; }
 .lesson__text p { font-size: 15px; line-height: 1.55; }

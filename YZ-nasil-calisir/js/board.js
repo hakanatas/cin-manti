@@ -25,8 +25,10 @@ export class Board extends THREE.Group {
     this.baseColor = new THREE.Color(palette.creamDeep);
     this.sweet = new THREE.Color(palette.sweet);
     this.salty = new THREE.Color(palette.salty);
-    this.sweetDough = new THREE.Color(palette.sweet).lerp(new THREE.Color('#ffffff'), 0.3);
-    this.saltyDough = new THREE.Color(palette.salty).lerp(new THREE.Color('#ffffff'), 0.3);
+    this.clothSweet = new THREE.Color(palette.sweet).lerp(new THREE.Color('#ffffff'), 0.1);
+    this.clothSalty = new THREE.Color('#e4a114');
+    this.sweetDough = new THREE.Color(palette.sweet).lerp(new THREE.Color('#ffffff'), 0.08);
+    this.saltyDough = new THREE.Color(palette.salty).lerp(new THREE.Color('#ffffff'), 0.05);
     this.predictions = new Float32Array(tiles * tiles).fill(0.5);
     for (let j = 0; j < tiles; j++) {
       for (let i = 0; i < tiles; i++) {
@@ -142,7 +144,7 @@ export class Board extends THREE.Group {
   setProbe(sugar, salt, p) {
     this.probe.visible = true;
     this.probe.position.copy(this.toLocal(sugar, salt, 0.0));
-    const c = new THREE.Color().lerpColors(this.salty, this.sweet, p).lerp(new THREE.Color('#ffffff'), 0.25);
+    const c = new THREE.Color().lerpColors(this.salty, this.sweet, p).lerp(new THREE.Color('#ffffff'), 0.08);
     this.probe.userData.marble.material.color.copy(c);
   }
 
@@ -183,9 +185,9 @@ export class Board extends THREE.Group {
       const n = this.tiles * this.tiles;
       for (let k = 0; k < n; k++) {
         const p = this.predictions[k];
-        tmp.lerpColors(this.salty, this.sweet, p);
-        // soften toward the cloth so labels stay readable
-        tmp.lerp(this.baseColor, 0.3);
+        tmp.lerpColors(this.clothSalty, this.clothSweet, p);
+        // soften toward the cloth so the dumplings stay readable
+        tmp.lerp(this.baseColor, 0.38);
         tmp.lerp(this.baseColor, 1 - this.tint);
         this.tileMesh.setColorAt(k, tmp);
       }
