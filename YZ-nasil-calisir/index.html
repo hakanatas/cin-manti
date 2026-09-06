@@ -6,6 +6,9 @@
   <title>Yapay zeka nasıl çalışır? — Küçük Dersler</title>
   <meta name="description" content="Minik bir mutfakta, gerçek bir sinir ağını eğiterek yapay zekanın nasıl öğrendiğini keşfet." />
   <meta name="theme-color" content="#f5eee3" />
+  <meta property="og:title" content="Yapay zeka nasıl çalışır?" />
+  <meta property="og:description" content="Minik bir mutfakta gerçek bir sinir ağı eğitip yapay zekanın nasıl öğrendiğini kendi gözlerinle gör. Sekiz kısa bölüm." />
+  <meta property="og:type" content="website" />
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
   <link rel="preload" href="../assets/fonts/Fraunces-Variable.ttf" as="font" type="font/ttf" crossorigin />
   <link rel="preload" href="../assets/fonts/InstrumentSans-Variable.ttf" as="font" type="font/ttf" crossorigin />
@@ -31,9 +34,8 @@
   </div>
 
   <header class="topbar ui">
-    <a class="brand" href="../">Küçük Dersler</a>
+    <a class="brand" href="./">Küçük Dersler</a>
     <div class="topbar__right">
-      <a class="pill pill--link" href="../" title="The Dumpling Club'a dön">Dumpling Club</a>
       <button class="pill" id="btn-hide-ui" type="button" title="Arayüzü gizle (H)">Arayüzü gizle</button>
     </div>
   </header>
@@ -41,7 +43,7 @@
   <section class="hero ui">
     <p class="eyebrow">Ders 01 · Yapay zeka</p>
     <h1 class="headline">Yapay zeka<br />nasıl çalışır?</h1>
-    <p class="lede"><em>Tahmin ederek öğrenir.</em> Minik bir mutfakta gerçek bir sinir ağı eğitip nasıl olduğunu kendi gözlerinle gör.</p>
+    <p class="lede"><em>Tahmin ederek öğrenir.</em> Minik bir mutfakta gerçek bir sinir ağı eğitip nasıl olduğunu kendi gözlerinle gör. Sekiz kısa bölüm, beş dakika.</p>
   </section>
 
   <aside class="lesson ui" id="lesson" aria-live="polite">
@@ -86,6 +88,7 @@
   <button type="button" class="reveal" id="btn-show-ui" hidden>Arayüzü göster</button>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <footer class="credit ui">Küçük Dersler · Tarayıcıda çalışan gerçek bir sinir ağı; hiçbir veri gönderilmez.</footer>
   <noscript><p class="noscript">Bu ders JavaScript ve WebGL gerektirir.</p></noscript>
   <script type="module" src="./js/main.js"></script>
 </body>

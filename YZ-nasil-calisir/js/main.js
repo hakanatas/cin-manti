@@ -336,6 +336,8 @@ const ctx = {
   },
   stopAmbientPulses() {
     state.ambient = false;
+    board.probe.visible = false;
+    network.clearGlow();
   },
 };
 function promptText() {
@@ -413,6 +415,10 @@ function go(i, instant = false) {
   dom.collapse.textContent = 'Küçült';
   dom.lesson.scrollTop = 0;
   canvas.classList.toggle('is-probing', !!s.sliders);
+  board.probe.visible = false;
+  network.clearGlow();
+  outputTag.el.textContent = '';
+  dom.text.querySelectorAll('[data-count="dishes"]').forEach((el) => (el.textContent = String(data.length)));
   focus(s.focus, instant);
   s.enter?.(ctx);
   sound.play('click', { volume: 0.6 });
@@ -592,7 +598,7 @@ function frame() {
   }
   if (state.autoplay && !state.training) {
     state.autoTimer += dt;
-    if (state.autoTimer > 11) go(state.step === STEPS.length - 1 ? 0 : state.step + 1);
+    if (state.autoTimer > 15) go(state.step === STEPS.length - 1 ? 0 : state.step + 1);
   }
 
   board.update(dt);
