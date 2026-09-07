@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Yapay zeka nasıl çalışır? — Küçük Dersler</title>
-  <meta name="description" content="Çırak robot aşçı Bıdık ile yapay zekanın nasıl öğrendiğini keşfet: tahmin et, yanıl, düzelt, tekrar. İlkokul ve ortaokul için etkileşimli ders." />
+  <meta name="description" content="Çırak robot aşçı Bıdık mantıyı ne kadar pişireceğini örneklerden öğreniyor: tahmin et, yanıl, düzelt, tekrar. İlkokul ve ortaokul için etkileşimli yapay zeka dersi." />
   <meta name="theme-color" content="#f5eee3" />
   <meta property="og:title" content="Yapay zeka nasıl çalışır?" />
   <meta property="og:description" content="Çırak robot aşçı Bıdık ile yapay zekanın nasıl öğrendiğini keşfet. Sekiz kısa bölüm, oyunlar ve mini sınav." />
@@ -50,7 +50,7 @@
     <div class="intro__card">
       <p class="eyebrow">Selam!</p>
       <h2 class="intro__title">Ben Bıdık! Çırak robot aşçıyım.</h2>
-      <p class="intro__text">Küçük bir derdim var: tatlı mantıyı tuzludan bir türlü ayıramıyorum. Bana yardım eder misin? Sekiz kısa bölüm, birkaç oyun, sonunda da minik bir sınav. Söz, sıkılmayacaksın.</p>
+      <p class="intro__text">Küçük bir derdim var: mantılarım bazen çiğ kalıyor, bazen lapa oluyor. Ne kadar pişireceğimi bir türlü tutturamıyorum. Bana yardım eder misin? Sekiz kısa bölüm, birkaç oyun, sonunda da minik bir sınav. Söz, sıkılmayacaksın.</p>
       <button type="button" class="btn btn--accent btn--big" id="btn-start">Tabii, hadi başlayalım!</button>
     </div>
   </div>
@@ -82,13 +82,13 @@
         <canvas class="spark" id="spark" width="220" height="44" aria-label="Hata puanı eğrisi"></canvas>
       </div>
       <div class="lesson__sliders" id="lesson-sliders" hidden>
-        <label>Şeker <input type="range" id="sl-sugar" min="0" max="100" value="62" /></label>
-        <label>Tuz <input type="range" id="sl-salt" min="0" max="100" value="45" /></label>
+        <label>Boy <input type="range" id="sl-sugar" min="0" max="100" value="62" /></label>
+        <label>Süre <input type="range" id="sl-salt" min="0" max="100" value="45" /></label>
       </div>
       <p class="readout" id="readout" hidden></p>
       <div class="guess" id="guess" hidden>
-        <button type="button" class="btn btn--sweet" id="guess-sweet">Bence tatlı!</button>
-        <button type="button" class="btn btn--salty" id="guess-salty">Bence tuzlu!</button>
+        <button type="button" class="btn btn--sweet" id="guess-sweet">Tam kıvamında!</button>
+        <button type="button" class="btn btn--salty" id="guess-salty">Olmamış!</button>
       </div>
       <div class="lesson__actions">
         <button type="button" class="btn btn--accent" id="btn-action" hidden></button>

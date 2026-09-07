@@ -11,11 +11,11 @@ export const STEPS = [
     label: 'Mantılar',
     title: 'Bıdık\'a kural değil, örnek veriyoruz',
     body: `
-      <p>Bıdık'a "şekeri çoksa tatlıdır" demek çok kolay olurdu, değil mi? Ama biz öyle yapmayacağız. Masaya bir sürü mantı dizeceğiz ve Bıdık kendi kendine çözecek.</p>
-      <p>Her mantının içinde biraz <b>şeker</b>, biraz <b>tuz</b> var. <span class="sweet">Pembeler tatlı</span>, <span class="salty">sarılar tuzlu</span>. Bıdık hepsini tek tek inceleyecek. Biraz uzun sürecek ama böylesi daha eğlenceli!</p>
-      ${teacher('<p>Bu masa <b>eğitim verisi</b>. Her mantı bir örnek: iki özellik (şeker, tuz; 0–1 arası) ve bir etiket (tatlı = 1, tuzlu = 0). <span data-count="dishes">64</span> örnek var. Masanın gizli bir kuralı var ama model onu görmüyor; yalnızca örnekleri görüyor.</p>')}`,
+      <p>Bıdık'ın derdi şu: mantıları bazen çiğ kalıyor, bazen lapa oluyor. Büyük mantı daha uzun pişer, tamam da tam olarak ne kadar? Bunu ona kural olarak söylemeyeceğiz. Masaya bir sürü pişmiş mantı dizeceğiz, Bıdık kendi çözecek.</p>
+      <p>Masada sağa gittikçe mantılar büyüyor, yukarı çıktıkça daha uzun pişmişler. <span class="sweet">Pembeler tam kıvamında</span>, <span class="salty">sarılar olmamış</span>: ya çiğ kalmış ya da fazla pişmiş. Masaya dikkatli bak: bir desen görüyor musun?</p>
+      ${teacher('<p>Bu masa <b>eğitim verisi</b>. Her mantı bir örnek: iki özellik (boy 0–1, pişme süresi 0–10 dakika) ve bir etiket (tam kıvamında = 1, olmamış = 0). <span data-count="dishes">64</span> örnek var. Gizli kural: ideal süre 3 + 6·boy dakika, ±1,5 dakika tolerans. Sınıf sınırı çapraz bir şerit, yani doğrusal olmayan bir kural; gizli katmanı olmayan bir model bunu öğrenemez.</p>')}`,
     focus: 'board',
-    say: 'Ooo, bu kadar mantı mı? Tamam, hepsini inceleyeceğim!',
+    say: 'Ooo, bu kadar mantı mı? Hangisi kıvamında, hangisi olmamış, bakayım!',
     mood: 'curious',
     enter(c) {
       c.board.tintTarget = 0;
@@ -31,9 +31,9 @@ export const STEPS = [
     label: 'Kafası',
     title: 'Bıdık\'ın kafasının içine bakalım',
     body: `
-      <p>Hazır mısın? Bıdık'ın kafasının içi işte böyle. Şeker ve tuz soldan giriyor. Ortadaki altı <b>yardımcı</b> onları dinleyip birbirine fısıldıyor. En sağdaki yardımcı da son sözü söylüyor: <i>tatlı mı?</i></p>
-      <p>Yardımcıları bağlayan <b>ipleri</b> gördün mü? Kalın ip, güçlü fısıltı demek. <span class="salty2">Kiremit ip</span> "evet, tatlı!" diyor, <span class="slate">mavi ip</span> "yok, hiç sanmıyorum" diyor. Şu anda hepsi karmakarışık; Bıdık daha hiçbir şey bilmiyor. Ama merak etme, az sonra öğrenecek.</p>
-      ${teacher('<p>Bu bir <b>yapay sinir ağı</b>: 2 giriş, 6 düğümlü bir gizli katman, 1 çıkış. İpler <b>ağırlık</b> (18 tane) ve her düğümde bir sapma değeri var; toplam 25 <b>parametre</b>. Kalınlık büyüklüğü, renk işareti gösterir. Başlangıçta hepsi rastgeledir.</p>')}`,
+      <p>Hazır mısın? Bıdık'ın kafasının içi işte böyle. Mantının boyu ve pişme süresi soldan giriyor. Ortadaki sekiz <b>yardımcı</b> onları dinleyip birbirine fısıldıyor. En sağdaki yardımcı da son sözü söylüyor: <i>tam kıvamında mı?</i></p>
+      <p>Yardımcıları bağlayan <b>ipleri</b> gördün mü? Kalın ip, güçlü fısıltı demek. <span class="salty2">Kiremit ip</span> "evet, kıvamında!" diyor, <span class="slate">mavi ip</span> "yok, hiç sanmıyorum" diyor. Şu anda hepsi karmakarışık; Bıdık daha hiçbir şey bilmiyor. Ama merak etme, az sonra öğrenecek.</p>
+      ${teacher('<p>Bu bir <b>yapay sinir ağı</b>: 2 giriş, 8 düğümlü bir gizli katman, 1 çıkış. İpler <b>ağırlık</b> (24 tane) ve her düğümde bir sapma değeri var; toplam 33 <b>parametre</b>. Kalınlık büyüklüğü, renk işareti gösterir. Başlangıçta hepsi rastgeledir.</p>')}`,
     focus: 'network',
     say: 'İplerim dolaşmış! Kafam karıştı, ne yapacağım şimdi?',
     mood: 'worried',
@@ -53,8 +53,8 @@ export const STEPS = [
     label: 'Oyun',
     title: 'Hadi bir oyun: önce sen, sonra Bıdık',
     body: `
-      <p>Masadan bir mantı seçtim. Sayılara bir bak: içinde ne kadar şeker, ne kadar tuz var? Sence tatlı mı, tuzlu mu? Korkma, yanlış cevap yok; sadece tahmin!</p>
-      <p>Sen söyleyince sıra Bıdık'a geçiyor. Sayılar iplerden akıp yardımcılara ulaşıyor; parlayanlar heyecanlananlar. En sondaki yardımcı bir yüzde söylüyor. %50'yi geçerse "tatlı!" diyoruz.</p>
+      <p>Masadan bir mantı seçtim. Boyuna ve kaç dakika piştiğine bak. Sence tam kıvamında mı, yoksa olmamış mı? Korkma, yanlış cevap yok; sadece tahmin!</p>
+      <p>Sen söyleyince sıra Bıdık'a geçiyor. Sayılar iplerden akıp yardımcılara ulaşıyor; parlayanlar heyecanlananlar. En sondaki yardımcı bir yüzde söylüyor. %50'yi geçerse "tam kıvamında!" diyoruz.</p>
       ${teacher('<p><b>İleri geçiş</b>: her düğüm girdileri ağırlıklarla çarpıp toplar, sonra bir <b>aktivasyon</b> fonksiyonundan (tanh) geçirir. Çıkış düğümü sigmoid ile 0–1 arası bir olasılık üretir. Eğitilmemiş model çoğunlukla yanılır.</p>')}`,
     focus: 'network',
     say: 'Bir mantı seçtim. Önce sen söyle, sonra ben deneyeyim!',
@@ -98,8 +98,8 @@ export const STEPS = [
     title: 'Tekrar, tekrar, tekrar!',
     body: `
       <p>Bir düzeltme yetmez tabii. Bıdık aynı mantılara yüzlerce kez bakıp her seferinde ipleri azıcık düzeltiyor. Bisiklete binmeyi öğrenmek gibi: düşe kalka ama sonunda oluyor.</p>
-      <p>Antrenman sırasında masa örtüsüne bak. <span class="sweet">Pembe</span> yerler Bıdık'ın "burası tatlı" dediği, <span class="salty">sarı</span> yerler "burası tuzlu" dediği bölgeler. Kimse ona kuralı söylemedi. Kendi buldu. Süper, değil mi?</p>
-      ${teacher('<p><b>Eğitim</b>: tam yığın gradyan inişi, öğrenme hızı 0,6, yaklaşık 360 adım. Kayıp düşerken doğruluk yükselir; örtüdeki renk, modelin her (şeker, tuz) noktası için tahminidir. Ortaya çıkan eğri <b>karar sınırı</b>dır.</p>')}`,
+      <p>Antrenman sırasında masa örtüsüne bak. <span class="sweet">Pembe</span> şerit Bıdık'ın "burada tam kıvamında" dediği yer, <span class="salty">sarı</span> bölgeler "burada olmamış" dediği yerler. Kimse ona "büyük mantı uzun pişer" demedi. Kendi buldu. Süper, değil mi?</p>
+      ${teacher('<p><b>Eğitim</b>: tam yığın gradyan inişi, öğrenme hızı 1,2, 600 adım. Kayıp düşerken doğruluk yükselir; örtüdeki renk, modelin her (boy, süre) noktası için tahminidir. Ortaya çıkan çapraz şerit <b>karar sınırı</b>dır ve gizli katman sayesinde öğrenilebilir.</p>')}`,
     focus: 'overview',
     say: 'Hadi antrenman! Düşe kalka öğrenirim, göreceksin.',
     mood: 'happy',
@@ -128,8 +128,8 @@ export const STEPS = [
     label: 'Sınav',
     title: 'Sınav zamanı: yepyeni bir mantı!',
     body: `
-      <p>Bıdık çalıştı, şimdi sınav! Masaya hiç görmediği bir mantı koy: örtüye tıkla ya da kaydırıcıları oynat. Sonra yine önce sen tahmin et, ardından Bıdık.</p>
-      <p>Sınıra yakın mantılarda Bıdık biraz kararsız kalabilir: "%55 tatlı" gibi. Hiç dert değil; biz de bazen "hmm, emin değilim" demez miyiz?</p>
+      <p>Bıdık çalıştı, şimdi sınav! Masaya hiç görmediği bir mantı koy: örtüye tıkla ya da kaydırıcılarla boyunu ve süresini ayarla. Sonra yine önce sen tahmin et, ardından Bıdık.</p>
+      <p>Şeridin kenarına yakın mantılarda Bıdık biraz kararsız kalabilir: "%55 kıvamında" gibi. Hiç dert değil; biz de bazen "hmm, bir dakika daha mı pişseydi?" demez miyiz?</p>
       ${teacher('<p>Görülmemiş örneklerde doğru tahmin yapabilmeye <b>genelleme</b> denir. Karşılaştırma için masanın gizli kuralı da gösteriliyor. Model az eğitildiyse bir önceki bölümde antrenmanı çalıştırın.</p>')}`,
     focus: 'board',
     say: 'Yeni mantı mı? Heyecanlandım! Bakalım bilebilecek miyim.',
@@ -152,7 +152,7 @@ export const STEPS = [
     label: 'Sohbet',
     title: 'Sohbet robotları da tıpkı Bıdık gibi',
     body: `
-      <p>ChatGPT gibi sohbet robotlarını duydun mu? Onlar da aynı Bıdık gibi öğrendi! Sadece oyunları farklı: tatlı-tuzlu yerine <b>"sıradaki kelime ne?"</b> oyunu oynuyorlar.</p>
+      <p>ChatGPT gibi sohbet robotlarını duydun mu? Onlar da aynı Bıdık gibi öğrendi! Sadece oyunları farklı: "kıvamında mı?" yerine <b>"sıradaki kelime ne?"</b> oyunu oynuyorlar.</p>
       <p>Milyonlarca kitap ve yazı okudular. Her seferinde sıradaki kelimeyi tahmin ettiler, yanılınca iplerini düzelttiler. Şimdi sen de oyna: en olası kelimeyi seç, cümle büyüsün!</p>
       ${teacher('<p><b>Büyük dil modelleri</b> metni <b>token</b>lara böler ve bir sonraki token için olasılık dağılımı üretir; aynı tahmin et → kaybı ölç → ağırlıkları düzelt döngüsüyle eğitilir, yalnızca yüz milyarlarca parametre ve çok daha büyük veriyle. Burada hep en olası kelime seçiliyor; gerçek modeller örnekleme (sıcaklık) kullanır.</p>')}`,
     focus: 'tokens',
@@ -189,7 +189,7 @@ export const STEPS = [
       <div class="quiz" id="quiz"></div>
       ${teacher('<p>Özet: (1) Model kural ezberlemez, örneklerden öğrenir. (2) Model, ağırlıklarla dolu bir tahmin makinesidir. (3) Eğitim: tahmin et, kaybı ölç, ağırlıkları azıcık düzelt; çok kez. (4) Genelleme: görülmemiş örneklerde de tahmin. Dil modelleri aynı döngüyü "sıradaki token" görevinde uygular.</p>')}`,
     focus: 'overview',
-    say: 'Artık tatlıyı tuzludan ayırabiliyorum! Peki ya sen?',
+    say: 'Artık mantıyı tam kıvamında pişirebiliyorum! Peki ya sen?',
     mood: 'proud',
     quiz: true,
     enter(c) {
@@ -209,10 +209,10 @@ export const STEPS = [
 
 export const QUIZ = [
   {
-    q: 'Bıdık tatlıyı tuzludan ayırmayı nasıl öğrendi?',
+    q: 'Bıdık mantıyı ne kadar pişireceğini nasıl öğrendi?',
     options: ['Ona kuralı söyledik', 'Bir sürü örneğe baktı'],
     answer: 1,
-    why: 'Aynen öyle! Kural falan yoktu; Bıdık mantılara baka baka kendi buldu.',
+    why: 'Aynen öyle! Kural falan söylemedik; Bıdık pişmiş mantılara baka baka kendi buldu.',
     nope: 'Hmm, hayır. Ona hiç kural söylemedik, sadece mantıları gösterdik.',
   },
   {

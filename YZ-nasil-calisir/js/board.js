@@ -144,6 +144,8 @@ export class Board extends THREE.Group {
   setProbe(sugar, salt, p) {
     this.probe.visible = true;
     this.probe.position.copy(this.toLocal(sugar, salt, 0.0));
+    const grow = 0.7 + 0.75 * sugar;
+    this.probe.userData.marble.scale.setScalar(1.6 * grow);
     const c = new THREE.Color().lerpColors(this.salty, this.sweet, p).lerp(new THREE.Color('#ffffff'), 0.08);
     this.probe.userData.marble.material.color.copy(c);
   }
@@ -166,6 +168,8 @@ export class Board extends THREE.Group {
       this.plateMesh.setMatrixAt(count, d.matrix);
       d.position.y = 0.04;
       d.rotation.y = (dish.x[0] * 7 + dish.x[1] * 5) % 1.2 - 0.6;
+      const grow = 0.7 + 0.75 * dish.x[0];
+      d.scale.set(s * grow, s * grow, s * grow);
       d.updateMatrix();
       this.marbleMesh.setMatrixAt(count, d.matrix);
       this.marbleMesh.setColorAt(count, (dish.y ? this.sweetDough : this.saltyDough));

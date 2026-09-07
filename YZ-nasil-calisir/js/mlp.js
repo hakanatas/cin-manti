@@ -13,21 +13,33 @@ function seeded(seed) {
 
 const sigmoid = (x) => 1 / (1 + Math.exp(-x));
 
-/** Ground truth of the toy kitchen: is a dish "sweet" given sugar & salt (0..1)? */
-export function trueLabel(sugar, salt) {
-  return sugar > 0.28 + 0.55 * salt * salt ? 1 : 0;
+/**
+ * The kitchen's hidden rule: a dumpling is cooked just right when its
+ * cooking time matches its size. size 0..1 (small → big), time 0..1
+ * (0 → 10 minutes). Perfect window: 3 + 6·size minutes, ±1.5 minutes.
+ */
+export const MINUTES = 10;
+export function idealMinutes(size) {
+  return 3 + 6 * size;
+}
+export function trueLabel(size, time) {
+  return Math.abs(time * MINUTES - idealMinutes(size)) < 1.5 ? 1 : 0;
 }
 
 export function makeDataset(count = 64, seed = 11) {
   const r = seeded(seed);
   const data = [];
   let guard = 0;
-  while (data.length < count && guard++ < 5000) {
-    const sugar = 0.05 + r() * 0.9;
-    const salt = 0.05 + r() * 0.9;
-    const margin = sugar - (0.28 + 0.55 * salt * salt);
-    if (Math.abs(margin) < 0.05) continue; // keep a little gap so the boundary is learnable
-    data.push({ x: [sugar, salt], y: trueLabel(sugar, salt) });
+  let positives = 0;
+  while (data.length < count && guard++ < 20000) {
+    const size = 0.05 + r() * 0.9;
+    // sample half the dishes near the ideal time so both classes are well represented
+    const time = data.length % 2 === 0 ? 0.05 + r() * 0.9 : Math.min(0.95, Math.max(0.05, (idealMinutes(size) + (r() * 2 - 1) * 2.6) / MINUTES));
+    const dist = Math.abs(time * MINUTES - idealMinutes(size));
+    if (Math.abs(dist - 1.5) < 0.45) continue; // keep a little gap so the boundary is learnable
+    const y = trueLabel(size, time);
+    if (y) positives++;
+    data.push({ x: [size, time], y });
   }
   return data;
 }

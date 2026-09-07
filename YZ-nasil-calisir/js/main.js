@@ -4,7 +4,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { Tweens, Ease, rand, pick, clamp } from '../../js/tween.js';
 import { SoundKit } from '../../js/audio.js';
 import { makeSoftDotTexture, makeMouthTextures } from '../../js/textures.js';
-import { TinyNet, makeDataset, trueLabel } from './mlp.js';
+import { TinyNet, makeDataset, trueLabel, MINUTES } from './mlp.js';
 import { Board } from './board.js';
 import { Network3D } from './network.js';
 import { TokenDemo } from './tokens.js';
@@ -143,7 +143,7 @@ const mouths = makeMouthTextures();
 // Lesson objects
 // ---------------------------------------------------------------------------
 
-const net = new TinyNet(6, 3);
+const net = new TinyNet(8, 3);
 const data = makeDataset(64, 11);
 const board = new Board({ size: 3.0, tiles: 26, palette: PALETTE, mouths });
 board.position.set(-0.35, 0, 0.25);
@@ -170,12 +170,12 @@ function makeTag(text, cls = '') {
 }
 const netOn = () => network.weightsShown > 0.5 && !tokens.visible;
 const tags = [
-  { el: makeTag('şeker'), get: () => network.pos.input[0].clone().add(new THREE.Vector3(-0.42, 0, 0)), on: netOn },
-  { el: makeTag('tuz'), get: () => network.pos.input[1].clone().add(new THREE.Vector3(-0.38, 0, 0)), on: netOn },
-  { el: makeTag('tatlı mı?', 'tag--big'), get: () => network.pos.output.clone().add(new THREE.Vector3(0.05, 0.42, 0)), on: netOn },
+  { el: makeTag('boy'), get: () => network.pos.input[0].clone().add(new THREE.Vector3(-0.4, 0, 0)), on: netOn },
+  { el: makeTag('süre'), get: () => network.pos.input[1].clone().add(new THREE.Vector3(-0.4, 0, 0)), on: netOn },
+  { el: makeTag('kıvamında mı?', 'tag--big'), get: () => network.pos.output.clone().add(new THREE.Vector3(0.05, 0.42, 0)), on: netOn },
   { el: makeTag('yardımcılar'), get: () => new THREE.Vector3(network.columns[1], 2.28, 0), on: netOn },
-  { el: makeTag('şeker →', 'tag--axis'), get: () => board.localToWorld(new THREE.Vector3(0.9, 0.02, board.size / 2 + 0.3)), on: () => !tokens.visible && state.step !== 6 },
-  { el: makeTag('↑ tuz', 'tag--axis'), get: () => board.localToWorld(new THREE.Vector3(board.size / 2 + 0.36, 0.02, 0.1)), on: () => !tokens.visible && state.step !== 6 },
+  { el: makeTag('küçük → büyük', 'tag--axis'), get: () => board.localToWorld(new THREE.Vector3(0.7, 0.02, board.size / 2 + 0.3)), on: () => !tokens.visible && state.step !== 6 },
+  { el: makeTag('↑ pişme süresi', 'tag--axis'), get: () => board.localToWorld(new THREE.Vector3(board.size / 2 + 0.55, 0.02, 0.1)), on: () => !tokens.visible && state.step !== 6 },
   { el: makeTag('sıradaki kelime?', 'tag--big'), get: () => tokens.localToWorld(new THREE.Vector3(0, 2.3, -0.4)), on: () => tokens.visible },
 ];
 const outputTag = { el: makeTag('', 'tag--big'), get: () => network.pos.output.clone().add(new THREE.Vector3(0.05, -0.48, 0)), on: () => outputTag.text && netOn(), text: '' };
@@ -189,7 +189,7 @@ tags.push(bubble);
 
 const FOCUS = {
   overview: { target: new THREE.Vector3(1.7, 0.5, 0.1), dist: 11.0, az: 0.25, el: 0.98, bidik: [2.1, 1.9] },
-  board: { target: new THREE.Vector3(-0.35, 0.2, 0.25), dist: 6.4, az: 0.1, el: 1.0, bidik: [1.55, 2.0] },
+  board: { target: new THREE.Vector3(-0.95, 0.2, 0.25), dist: 6.9, az: 0.12, el: 1.0, bidik: [1.55, 2.0] },
   network: { target: new THREE.Vector3(3.3, 1.15, 0), dist: 6.9, az: 0.18, el: 1.2, bidik: [4.7, -0.25] },
   tokens: { target: new THREE.Vector3(0.9, 0.6, 0.0), dist: 8.2, az: 0.05, el: 1.05, bidik: [-2.5, 1.4] },
   bidik: { target: new THREE.Vector3(2.4, 0.75, 1.7), dist: 5.4, az: 0.2, el: 1.2, bidik: [2.4, 1.7] },
@@ -287,7 +287,7 @@ const ctx = {
     sound.play('drip', { volume: 0.5 });
     await tweens.wait(null, 0.7);
     network.setGlow('output', 0, p);
-    outputTag.text = `%${Math.round(p * 100)} tatlı`;
+    outputTag.text = `%${Math.round(p * 100)} kıvamında`;
     outputTag.el.textContent = outputTag.text;
     ctx.lastExample = example;
     ctx.forwardBusy = false;
@@ -306,8 +306,8 @@ const ctx = {
     dom.guessSweet.disabled = false;
     dom.guessSalty.disabled = false;
     dom.readout.hidden = false;
-    dom.readout.innerHTML = `<span class="big">Bu mantıda şeker <b>${Math.round(ex.x[0] * 10)}</b>/10, tuz <b>${Math.round(ex.x[1] * 10)}</b>/10</span>Sence bu mantı tatlı mı, tuzlu mu?`;
-    ctx.say('Sen ne dersin? Tatlı mı, tuzlu mu?', 5);
+    dom.readout.innerHTML = `<span class="big">${describe(ex.x)}</span>Sence bu mantı tam kıvamında mı, yoksa olmamış mı?`;
+    ctx.say('Sen ne dersin? Tam kıvamında mı, olmamış mı?', 5);
     sound.play('click');
   },
   async answerGuess(youSayIsSweet) {
@@ -318,7 +318,7 @@ const ctx = {
     dom.guessSalty.disabled = true;
     const truth = r.example.y;
     const youOk = r.you === truth;
-    dom.readout.innerHTML = `<span class="big">Sen: <b>${youSayIsSweet ? 'tatlı' : 'tuzlu'}</b> ${youOk ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>'}</span>Şimdi sıra Bıdık'ta…`;
+    dom.readout.innerHTML = `<span class="big">Sen: <b>${youSayIsSweet ? 'kıvamında' : 'olmamış'}</b> ${youOk ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>'}</span>Şimdi sıra Bıdık'ta…`;
     ctx.say('Tamam, şimdi ben deneyeyim!', 3);
     const p = await ctx.showForward(r.example);
     if (p === null) return;
@@ -329,8 +329,8 @@ const ctx = {
     updateScore();
     board.probeFace.setMood(truth ? 'joy' : 'yum');
     dom.readout.innerHTML =
-      `<span class="big">Sen: <b>${youSayIsSweet ? 'tatlı' : 'tuzlu'}</b> ${youOk ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>'} · Bıdık: <b>${bidikSays ? 'tatlı' : 'tuzlu'}</b> (%${Math.round(p * 100)}) ${bidikOk ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>'}</span>` +
-      `Doğru cevap: <b>${truth ? 'tatlı' : 'tuzlu'}</b>. ${bidikOk ? 'Bıdık da bildi!' : net.steps > 0 ? 'Bıdık bu sefer yanıldı; biraz daha antrenman iyi gelir.' : 'Bıdık daha öğrenmedi, ona kızma.'}`;
+      `<span class="big">Sen: <b>${youSayIsSweet ? 'kıvamında' : 'olmamış'}</b> ${youOk ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>'} · Bıdık: <b>${bidikSays ? 'kıvamında' : 'olmamış'}</b> (%${Math.round(p * 100)}) ${bidikOk ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>'}</span>` +
+      `Doğru cevap: <b>${truth ? 'tam kıvamında' : 'olmamış'}</b>. ${bidikOk ? 'Bıdık da bildi!' : net.steps > 0 ? 'Bıdık bu sefer yanıldı; biraz daha antrenman iyi gelir.' : 'Bıdık daha öğrenmedi, ona kızma.'}`;
     if (bidikOk) {
       bidik.react('joy', 2);
       bidik.doHop(0.8);
@@ -358,7 +358,7 @@ const ctx = {
     await tweens.wait(null, 0.6);
     network.emitPulses(1, [1, 1], true, 0.6);
     await tweens.wait(null, 0.6);
-    net.trainStep(data, 0.6);
+    net.trainStep(data, 1.2);
     const after = net.evaluate(data);
     sound.play('boing', { volume: 0.5 });
     bidik.react('proud', 1.5);
@@ -376,7 +376,7 @@ const ctx = {
   },
   startTraining() {
     state.training = true;
-    state.trainBudget = 360;
+    state.trainBudget = 600;
     dom.action.textContent = 'Dur biraz';
     dom.action.classList.add('is-running');
     board.tintTarget = 1;
@@ -421,7 +421,7 @@ const ctx = {
     dom.guessSweet.disabled = false;
     dom.guessSalty.disabled = false;
     dom.readout.hidden = false;
-    dom.readout.innerHTML = `<span class="big">Yeni mantı: şeker <b>${Math.round(sugar * 10)}</b>/10, tuz <b>${Math.round(salt * 10)}</b>/10</span>Önce sen söyle: tatlı mı, tuzlu mu?`;
+    dom.readout.innerHTML = `<span class="big">Yeni mantı: ${describe([sugar, salt])}</span>Önce sen söyle: tam kıvamında mı, olmamış mı?`;
     network.clearGlow();
     outputTag.text = '';
     if (fresh) ctx.say('Yeni bir mantı geldi! Önce sen tahmin et.', 4);
@@ -495,6 +495,12 @@ const ctx = {
     }, 900);
   },
 };
+function describe(x) {
+  const sizeWords = ['minicik', 'küçük', 'orta boy', 'büyük', 'kocaman'];
+  const size = sizeWords[Math.min(4, Math.floor(x[0] * 5))];
+  const minutes = (x[1] * MINUTES).toFixed(1).replace('.0', '').replace('.', ',');
+  return `<b>${size}</b> bir mantı, <b>${minutes} dakika</b> pişmiş`;
+}
 function promptText() {
   return ['Mantı en güzel', 'Mantı en güzel yoğurtla', 'Mantı en güzel yoğurtla yenir'][tokens.stage] || '';
 }
@@ -764,9 +770,9 @@ function frame() {
   tweens.update(dt);
 
   if (state.training) {
-    const perFrame = reducedMotion ? 6 : 3;
+    const perFrame = reducedMotion ? 8 : 4;
     for (let k = 0; k < perFrame && state.trainBudget > 0; k++) {
-      net.trainStep(data, 0.6);
+      net.trainStep(data, 1.2);
       state.trainBudget--;
     }
     paintTimer += dt;
@@ -781,7 +787,7 @@ function frame() {
       ctx.stopTraining();
       const e = net.evaluate(data);
       toast(`Antrenman bitti! Bıdık ${net.steps} kez baktı, şimdi %${Math.round(e.acc * 100)} doğru biliyor.`);
-      ctx.say(e.acc > 0.95 ? 'Öğrendim! Artık tatlıyı tuzludan ayırabiliyorum. Yaşasın!' : 'Biraz daha antrenman lazım galiba.', 5);
+      ctx.say(e.acc > 0.95 ? 'Öğrendim! Artık mantıyı tam kıvamında pişirebiliyorum. Yaşasın!' : 'Biraz daha antrenman lazım galiba.', 5);
       bidik.react('bliss', 3);
       bidik.doHop(1);
       sound.play('refill', { volume: 0.5 });
