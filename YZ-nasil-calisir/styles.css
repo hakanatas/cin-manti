@@ -391,3 +391,41 @@ body { font-size: 17px; line-height: 1.5; }
   .toggle i::after { width: 10px; height: 10px; }
   .toggle[aria-pressed='true'] i::after { transform: translateX(8px); }
 }
+
+/* ---- one notch bigger ---------------------------------------------------- */
+body { font-size: 18px; }
+.lesson { width: min(500px, calc(100vw - 56px)); }
+.lesson__title { font-size: 33px; }
+.lesson__text p { font-size: 20px; line-height: 1.55; }
+.lesson__text .note { font-size: 16px; }
+.teacher p { font-size: 15.5px; }
+.readout { font-size: 18.5px; }
+.readout .big { font-size: 27px; }
+.stat__label { font-size: 12.5px; }
+.stat__value { font-size: 26px; }
+.lesson__sliders label { font-size: 17px; }
+.btn { font-size: 17px; }
+.btn--big { font-size: 20px; }
+.guess .btn { font-size: 20px; }
+.quiz__q { font-size: 20px; }
+.quiz__opts .btn { font-size: 17px; }
+.quiz__why { font-size: 17px; }
+.tag { font-size: 15.5px; }
+.tag--big { font-size: 19px; }
+.tag--bubble { font-size: 21px; max-width: 340px; }
+.intro__title { font-size: 34px; }
+.intro__text { font-size: 19px; }
+.lesson__count { font-size: 13px; }
+.dots button { font-size: 15px; }
+.toggle { font-size: 16px; }
+.pill, .reveal { font-size: 16px; }
+@media (max-width: 900px) {
+  .lesson__text p { font-size: 17.5px; }
+  .lesson__title { font-size: 26px; }
+  .readout { font-size: 16.5px; }
+  .tag--bubble { font-size: 17px; }
+  .dock .btn { font-size: 14px; }
+  .dots button { font-size: 12px; }
+}
+
+.toggle, .dock .btn { white-space: nowrap; }

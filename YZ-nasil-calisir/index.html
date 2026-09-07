@@ -30,38 +30,38 @@
   <div class="loading" id="loading" aria-live="polite">
     <div class="loading__mark">Küçük Dersler</div>
     <div class="loading__bar"><span id="loading-bar"></span></div>
-    <p class="loading__text" id="loading-text">Bıdık mutfağa geliyor…</p>
+    <p class="loading__text" id="loading-text">Bıdık şapkasını takıyor…</p>
   </div>
 
   <header class="topbar ui">
     <a class="brand" href="./">Küçük Dersler</a>
     <div class="topbar__right">
-      <button class="pill" id="btn-hide-ui" type="button" title="Arayüzü gizle (H)">Arayüzü gizle</button>
+      <button class="pill" id="btn-hide-ui" type="button" title="Yazıları gizle (H)">Sadece sahne</button>
     </div>
   </header>
 
   <section class="hero ui">
     <p class="eyebrow">Ders 01 · Yapay zeka</p>
     <h1 class="headline">Yapay zeka<br />nasıl çalışır?</h1>
-    <p class="lede"><em>Tahmin ederek öğrenir.</em> Çırak robot aşçı Bıdık ile birlikte öğren.</p>
+    <p class="lede"><em>Tahmin ederek öğrenir.</em> Gel, çırak robot aşçı Bıdık'la birlikte keşfedelim.</p>
   </section>
 
   <div class="intro" id="intro">
     <div class="intro__card">
-      <p class="eyebrow">Merhaba!</p>
-      <h2 class="intro__title">Ben Bıdık, çırak robot aşçıyım.</h2>
-      <p class="intro__text">Bir derdim var: tatlı mantıyı tuzlu mantıdan ayıramıyorum. Öğrenmeme yardım eder misin? Sekiz kısa bölüm, birkaç oyun ve sonunda minik bir sınav var.</p>
-      <button type="button" class="btn btn--accent btn--big" id="btn-start">Başlayalım!</button>
+      <p class="eyebrow">Selam!</p>
+      <h2 class="intro__title">Ben Bıdık! Çırak robot aşçıyım.</h2>
+      <p class="intro__text">Küçük bir derdim var: tatlı mantıyı tuzludan bir türlü ayıramıyorum. Bana yardım eder misin? Sekiz kısa bölüm, birkaç oyun, sonunda da minik bir sınav. Söz, sıkılmayacaksın.</p>
+      <button type="button" class="btn btn--accent btn--big" id="btn-start">Tabii, hadi başlayalım!</button>
     </div>
   </div>
 
   <div class="finish" id="finish" hidden>
     <div class="intro__card">
-      <p class="eyebrow">Tebrikler</p>
-      <h2 class="intro__title">Dersi bitirdin!</h2>
+      <p class="eyebrow">Yaşasın!</p>
+      <h2 class="intro__title">Dersi bitirdin, harikasın!</h2>
       <p class="intro__text" id="finish-text"></p>
       <div class="intro__actions">
-        <button type="button" class="btn btn--accent" id="btn-again">Baştan oyna</button>
+        <button type="button" class="btn btn--accent" id="btn-again">Bir daha oynayalım</button>
       </div>
     </div>
   </div>
@@ -76,9 +76,9 @@
       <h2 class="lesson__title" id="lesson-title"></h2>
       <div class="lesson__text" id="lesson-text"></div>
       <div class="lesson__stats" id="lesson-stats" hidden>
-        <div class="stat"><span class="stat__label">Bakış</span><span class="stat__value" id="stat-steps">0</span></div>
+        <div class="stat"><span class="stat__label">Kaç kez baktı</span><span class="stat__value" id="stat-steps">0</span></div>
         <div class="stat"><span class="stat__label">Hata puanı</span><span class="stat__value" id="stat-loss">–</span></div>
-        <div class="stat"><span class="stat__label">Doğru bilme</span><span class="stat__value" id="stat-acc">–</span></div>
+        <div class="stat"><span class="stat__label">Doğru bildi</span><span class="stat__value" id="stat-acc">–</span></div>
         <canvas class="spark" id="spark" width="220" height="44" aria-label="Hata puanı eğrisi"></canvas>
       </div>
       <div class="lesson__sliders" id="lesson-sliders" hidden>
@@ -87,8 +87,8 @@
       </div>
       <p class="readout" id="readout" hidden></p>
       <div class="guess" id="guess" hidden>
-        <button type="button" class="btn btn--sweet" id="guess-sweet">Tatlı</button>
-        <button type="button" class="btn btn--salty" id="guess-salty">Tuzlu</button>
+        <button type="button" class="btn btn--sweet" id="guess-sweet">Bence tatlı!</button>
+        <button type="button" class="btn btn--salty" id="guess-salty">Bence tuzlu!</button>
       </div>
       <div class="lesson__actions">
         <button type="button" class="btn btn--accent" id="btn-action" hidden></button>
@@ -98,23 +98,23 @@
   </aside>
 
   <nav class="dock ui" id="dock" aria-label="Bölümler">
-    <button type="button" class="btn btn--ghost" id="btn-prev" title="Önceki bölüm (←)">← Önceki</button>
+    <button type="button" class="btn btn--ghost" id="btn-prev" title="Önceki bölüm (←)">← Geri</button>
     <ol class="dots" id="dots"></ol>
-    <button type="button" class="btn btn--accent" id="btn-next" title="Sonraki bölüm (→)">Sonraki →</button>
+    <button type="button" class="btn btn--accent" id="btn-next" title="Sonraki bölüm (→)">Devam →</button>
     <span class="dock__sep"></span>
-    <button type="button" class="toggle" data-toggle="autoplay" aria-pressed="false" title="Otomatik oynat"><i></i><span>Otomatik</span></button>
+    <button type="button" class="toggle" data-toggle="autoplay" aria-pressed="false" title="Kendi kendine ilerlesin"><i></i><span>Kendi ilerlesin</span></button>
     <button type="button" class="toggle" data-toggle="sound" aria-pressed="false" title="Ses"><i></i><span>Ses</span></button>
   </nav>
 
   <p class="keys ui" id="keys" aria-hidden="true">
-    <kbd>←</kbd><kbd>→</kbd> bölüm · <kbd>␣</kbd> eylem · <kbd>E</kbd> antrenman · <kbd>R</kbd> baştan · <kbd>H</kbd> gizle
+    <kbd>←</kbd><kbd>→</kbd> bölüm · <kbd>␣</kbd> düğme · <kbd>E</kbd> antrenman · <kbd>R</kbd> unut · <kbd>H</kbd> sadece sahne
   </p>
 
-  <button type="button" class="reveal" id="btn-show-ui" hidden>Arayüzü göster</button>
+  <button type="button" class="reveal" id="btn-show-ui" hidden>Yazıları geri getir</button>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <footer class="credit ui">Küçük Dersler · Tarayıcıda çalışan gerçek bir sinir ağı; hiçbir veri gönderilmez.</footer>
+  <footer class="credit ui">Küçük Dersler · Bıdık gerçekten senin tarayıcında öğreniyor; hiçbir şey kimseye gönderilmiyor.</footer>
 
-  <noscript><p class="noscript">Bu ders JavaScript ve WebGL gerektirir.</p></noscript>
+  <noscript><p class="noscript">Bıdık'ı görebilmek için JavaScript ve WebGL gerekiyor.</p></noscript>
   <script type="module" src="./js/main.js"></script>
 </body>
 </html>

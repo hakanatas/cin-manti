@@ -264,7 +264,7 @@ const ctx = {
     board.paint((s, t) => net.predict([s, t]));
     sound.play('boing', { volume: 0.5 });
     bidik.react('surprised', 1.2);
-    ctx.say('Hâlâ karışık. Öğrenmeden düzelmez!', 3);
+    ctx.say('Hâlâ karman çorman! Öğrenmeden düzelmiyor bu ipler.', 3);
   },
   /** Run the network on an example with pulses; returns p. */
   async showForward(example, quiet = false) {
@@ -306,7 +306,7 @@ const ctx = {
     dom.guessSweet.disabled = false;
     dom.guessSalty.disabled = false;
     dom.readout.hidden = false;
-    dom.readout.innerHTML = `<span class="big">Bu mantıda şeker <b>${Math.round(ex.x[0] * 10)}</b>/10, tuz <b>${Math.round(ex.x[1] * 10)}</b>/10</span>Sence tatlı mı, tuzlu mu?`;
+    dom.readout.innerHTML = `<span class="big">Bu mantıda şeker <b>${Math.round(ex.x[0] * 10)}</b>/10, tuz <b>${Math.round(ex.x[1] * 10)}</b>/10</span>Sence bu mantı tatlı mı, tuzlu mu?`;
     ctx.say('Sen ne dersin? Tatlı mı, tuzlu mu?', 5);
     sound.play('click');
   },
@@ -318,8 +318,8 @@ const ctx = {
     dom.guessSalty.disabled = true;
     const truth = r.example.y;
     const youOk = r.you === truth;
-    dom.readout.innerHTML = `<span class="big">Sen: <b>${youSayIsSweet ? 'tatlı' : 'tuzlu'}</b> ${youOk ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>'}</span>Şimdi Bıdık deniyor…`;
-    ctx.say('Şimdi ben deneyeyim!', 3);
+    dom.readout.innerHTML = `<span class="big">Sen: <b>${youSayIsSweet ? 'tatlı' : 'tuzlu'}</b> ${youOk ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>'}</span>Şimdi sıra Bıdık'ta…`;
+    ctx.say('Tamam, şimdi ben deneyeyim!', 3);
     const p = await ctx.showForward(r.example);
     if (p === null) return;
     const bidikSays = p > 0.5 ? 1 : 0;
@@ -330,16 +330,16 @@ const ctx = {
     board.probeFace.setMood(truth ? 'joy' : 'yum');
     dom.readout.innerHTML =
       `<span class="big">Sen: <b>${youSayIsSweet ? 'tatlı' : 'tuzlu'}</b> ${youOk ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>'} · Bıdık: <b>${bidikSays ? 'tatlı' : 'tuzlu'}</b> (%${Math.round(p * 100)}) ${bidikOk ? '<span class="ok">✓</span>' : '<span class="bad">✗</span>'}</span>` +
-      `Doğru cevap: <b>${truth ? 'tatlı' : 'tuzlu'}</b>. ${bidikOk ? 'Bıdık bildi!' : net.steps > 0 ? 'Bıdık bu sefer yanıldı; biraz daha antrenman lazım.' : 'Bıdık daha öğrenmedi, üzülme.'}`;
+      `Doğru cevap: <b>${truth ? 'tatlı' : 'tuzlu'}</b>. ${bidikOk ? 'Bıdık da bildi!' : net.steps > 0 ? 'Bıdık bu sefer yanıldı; biraz daha antrenman iyi gelir.' : 'Bıdık daha öğrenmedi, ona kızma.'}`;
     if (bidikOk) {
       bidik.react('joy', 2);
       bidik.doHop(0.8);
       sound.play('yum', { volume: 0.7 });
-      ctx.say(youOk ? 'İkimiz de bildik!' : 'Ben bildim! Bir dahakine sen de bilirsin.', 3.5);
+      ctx.say(youOk ? 'İkimiz de bildik, çak bakalım!' : 'Bu sefer ben bildim! Bir dahakine sen de bilirsin.', 3.5);
     } else {
       bidik.react('worried', 2);
       sound.play('grab', { volume: 0.6 });
-      ctx.say(net.steps > 0 ? 'Ah, yanıldım. Biraz daha çalışmalıyım.' : 'Yanıldım. Henüz öğrenmedim ki!', 3.5);
+      ctx.say(net.steps > 0 ? 'Ah, yanıldım. Biraz daha çalışmam lazım.' : 'Yanıldım ama haklısın, daha öğrenmedim ki!', 3.5);
     }
   },
   async learnStep() {
@@ -350,7 +350,7 @@ const ctx = {
     if (p === null) return;
     ctx.forwardBusy = true;
     const wrong = (p > 0.5 ? 1 : 0) !== ex.y;
-    ctx.say(wrong ? 'Yanlış! Hangi ip suçlu?' : 'Doğru ama daha da emin olabilirim.', 2.5);
+    ctx.say(wrong ? 'Yanlış oldu! Hangi ip suçlu bakalım?' : 'Doğru bildim ama daha da emin olabilirim.', 2.5);
     await tweens.wait(null, 0.5);
     const { gW2 } = net.gradients(data);
     network.emitPulses(2, gW2.map((g) => g * 3), true, 0.6);
@@ -366,8 +366,8 @@ const ctx = {
     ctx.updateStats();
     board.paint((s, t) => net.predict([s, t]));
     dom.readout.hidden = false;
-    dom.readout.innerHTML = `<span class="big">Hata puanı ${before.loss.toFixed(2)} → <b>${after.loss.toFixed(2)}</b></span>İpler azıcık değişti. Bir daha bas: her seferinde biraz daha iyi.`;
-    ctx.say('İpleri azıcık düzelttim!', 3);
+    dom.readout.innerHTML = `<span class="big">Hata puanı ${before.loss.toFixed(2)} → <b>${after.loss.toFixed(2)}</b></span>İpler azıcık değişti. Bir daha bas; her seferinde biraz daha iyi olur.`;
+    ctx.say('İpleri azıcık düzelttim, oh be!', 3);
     ctx.forwardBusy = false;
   },
   toggleTraining() {
@@ -377,17 +377,17 @@ const ctx = {
   startTraining() {
     state.training = true;
     state.trainBudget = 360;
-    dom.action.textContent = 'Durdur';
+    dom.action.textContent = 'Dur biraz';
     dom.action.classList.add('is-running');
     board.tintTarget = 1;
     bidik.setMood('curious');
-    ctx.say('Bakıyorum, düzeltiyorum, bakıyorum, düzeltiyorum…', 6);
+    ctx.say('Bakıyorum, düzeltiyorum, bakıyorum, düzeltiyorum… Başım döndü!', 6);
     sound.play('click');
   },
   stopTraining() {
     if (!state.training) return;
     state.training = false;
-    dom.action.textContent = 'Antrenmanı başlat';
+    dom.action.textContent = 'Antrenman başlasın!';
     dom.action.classList.remove('is-running');
     bidik.setMood('happy');
   },
@@ -401,7 +401,7 @@ const ctx = {
     dom.readout.hidden = true;
     sound.play('refill', { volume: 0.5 });
     bidik.react('sleepy', 2);
-    ctx.say('Her şeyi unuttum. Baştan!', 3);
+    ctx.say('Hop, her şeyi unuttum! Baştan başlıyoruz.', 3);
   },
   updateStats() {
     const e = net.evaluate(data);
@@ -421,10 +421,10 @@ const ctx = {
     dom.guessSweet.disabled = false;
     dom.guessSalty.disabled = false;
     dom.readout.hidden = false;
-    dom.readout.innerHTML = `<span class="big">Yeni mantı: şeker <b>${Math.round(sugar * 10)}</b>/10, tuz <b>${Math.round(salt * 10)}</b>/10</span>Önce sen: tatlı mı, tuzlu mu?`;
+    dom.readout.innerHTML = `<span class="big">Yeni mantı: şeker <b>${Math.round(sugar * 10)}</b>/10, tuz <b>${Math.round(salt * 10)}</b>/10</span>Önce sen söyle: tatlı mı, tuzlu mu?`;
     network.clearGlow();
     outputTag.text = '';
-    if (fresh) ctx.say('Yeni bir mantı! Önce sen tahmin et.', 4);
+    if (fresh) ctx.say('Yeni bir mantı geldi! Önce sen tahmin et.', 4);
   },
   updateTokenReadout() {
     const c = tokens.candidates;
@@ -483,8 +483,8 @@ const ctx = {
     state.quizDone = true;
     const msg =
       correct === QUIZ.length
-        ? 'Üçte üç! Artık sen de biliyorsun: yapay zeka tahmin ederek öğrenir.'
-        : `${correct}/${QUIZ.length} doğru. Olsun, Bıdık da ilk seferde bilememişti. İstersen bölümlere geri dön.`;
+        ? 'Üçte üç! Artık sen de biliyorsun: yapay zeka tahmin ederek öğrenir. Tıpkı Bıdık gibi, tıpkı senin gibi.'
+        : `${correct} doğru, ${QUIZ.length - correct} yanlış. Hiç dert değil; Bıdık da ilk seferde bilememişti. İstersen bölümlere bir daha bakalım.`;
     dom.finishText.textContent = msg;
     setTimeout(() => {
       dom.finish.hidden = false;
@@ -553,7 +553,7 @@ function go(i, instant = false) {
   state.step = i;
   state.autoTimer = 0;
   const s = STEPS[i];
-  dom.count.textContent = `${String(i + 1).padStart(2, '0')} / ${String(STEPS.length).padStart(2, '0')}`;
+  dom.count.textContent = `Bölüm ${i + 1} / ${STEPS.length}`;
   dom.title.textContent = s.title;
   dom.text.innerHTML = s.body;
   dom.stats.hidden = !s.stats;
@@ -568,7 +568,7 @@ function go(i, instant = false) {
   dom.action2.hidden = !s.secondary;
   dom.action2.textContent = s.secondary || '';
   dom.prev.disabled = i === 0;
-  dom.next.textContent = i === STEPS.length - 1 ? 'Baştan al' : 'Sonraki →';
+  dom.next.textContent = i === STEPS.length - 1 ? 'Baştan başla' : 'Devam →';
   dom.dots.querySelectorAll('button').forEach((b, k) => (k === i ? b.setAttribute('aria-current', 'step') : b.removeAttribute('aria-current')));
   dom.lesson.classList.remove('is-collapsed');
   dom.collapse.setAttribute('aria-expanded', 'true');
@@ -608,7 +608,7 @@ dom.guessSalty.addEventListener('click', () => {
 dom.collapse.addEventListener('click', () => {
   const collapsed = dom.lesson.classList.toggle('is-collapsed');
   dom.collapse.setAttribute('aria-expanded', String(!collapsed));
-  dom.collapse.textContent = collapsed ? 'Aç' : 'Küçült';
+  dom.collapse.textContent = collapsed ? 'Yazıyı aç' : 'Küçült';
 });
 for (const sl of [dom.slSugar, dom.slSalt]) {
   sl.addEventListener('input', () => ctx.setProbe(Number(dom.slSugar.value) / 100, Number(dom.slSalt.value) / 100));
@@ -639,7 +639,7 @@ function setToggle(name, on) {
   }
   if (name === 'autoplay') {
     state.autoTimer = 0;
-    if (on) toast('Otomatik oynatma açık: bölümler kendiliğinden ilerler.');
+    if (on) toast('Tamam, bölümler kendi kendine ilerleyecek. Arkana yaslan.');
   }
 }
 document.querySelectorAll('[data-toggle]').forEach((b) => b.addEventListener('click', () => setToggle(b.dataset.toggle, b.getAttribute('aria-pressed') !== 'true')));
@@ -780,8 +780,8 @@ function frame() {
     if (state.trainBudget <= 0) {
       ctx.stopTraining();
       const e = net.evaluate(data);
-      toast(`Antrenman bitti: ${net.steps} bakış, doğru bilme %${Math.round(e.acc * 100)}.`);
-      ctx.say(e.acc > 0.95 ? 'Öğrendim! Artık tatlıyı tuzludan ayırabiliyorum.' : 'Biraz daha antrenman lazım galiba.', 5);
+      toast(`Antrenman bitti! Bıdık ${net.steps} kez baktı, şimdi %${Math.round(e.acc * 100)} doğru biliyor.`);
+      ctx.say(e.acc > 0.95 ? 'Öğrendim! Artık tatlıyı tuzludan ayırabiliyorum. Yaşasın!' : 'Biraz daha antrenman lazım galiba.', 5);
       bidik.react('bliss', 3);
       bidik.doHop(1);
       sound.play('refill', { volume: 0.5 });
@@ -852,5 +852,5 @@ async function boot() {
 }
 boot().catch((err) => {
   console.error(err);
-  dom.loadingText.textContent = 'Bir şeyler ters gitti. Sayfayı yenilemeyi dene.';
+  dom.loadingText.textContent = 'Ay, bir şeyler ters gitti. Sayfayı yenilemeyi dener misin?';
 });
