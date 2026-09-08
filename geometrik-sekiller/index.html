@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Geometrik şekiller — Küçük Dersler</title>
+  <meta name="description" content="Bıdık'ın hamur tahtasında nokta, doğru parçası, ışın, doğru, açı, çember ve dikmeyi keşfet. 5. sınıf için etkileşimli geometri dersi." />
+  <meta name="theme-color" content="#f5eee3" />
+  <meta property="og:title" content="Geometrik şekiller: Bıdık'ın hamur tahtası" />
+  <meta property="og:description" content="Nokta, doğru parçası, ışın, doğru, açı, çember ve dikme. Sekiz kısa bölüm, oyunlar ve Geombala." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="../assets/fonts/Fraunces-Variable.ttf" as="font" type="font/ttf" crossorigin />
+  <link rel="preload" href="../assets/fonts/InstrumentSans-Variable.ttf" as="font" type="font/ttf" crossorigin />
+  <link rel="stylesheet" href="./styles.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "../vendor/three/three.module.js",
+        "three/addons/": "../vendor/three/addons/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <canvas id="stage" tabindex="0" role="application" aria-label="Etkileşimli 3B geometri sahnesi. Sol ve sağ ok tuşlarıyla bölümler arasında geçin."></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="tags" id="tags" aria-hidden="true"></div>
+
+  <div class="loading" id="loading" aria-live="polite">
+    <div class="loading__mark">Küçük Dersler</div>
+    <div class="loading__bar"><span id="loading-bar"></span></div>
+    <p class="loading__text" id="loading-text">Bıdık tahtaya un serpiyor…</p>
+  </div>
+
+  <header class="topbar ui">
+    <a class="brand" href="./">Küçük Dersler</a>
+    <div class="topbar__right">
+      <button class="pill" id="btn-hide-ui" type="button" title="Yazıları gizle (H)">Sadece sahne</button>
+    </div>
+  </header>
+
+  <section class="hero ui">
+    <p class="eyebrow">Ders 02 · Matematik · 5. sınıf</p>
+    <h1 class="headline">Geometrik<br />şekiller</h1>
+    <p class="lede"><em>Nokta, çizgi, çember.</em> Bıdık'ın hamur tahtasında hepsini kendin çiz.</p>
+  </section>
+
+  <div class="intro" id="intro">
+    <div class="intro__card">
+      <p class="eyebrow">Selam!</p>
+      <h2 class="intro__title">Bıdık'ın hamur tahtasına hoş geldin.</h2>
+      <p class="intro__text">Bugün mantı yok, çizim var! Una parmak değdirip nokta yapacağız, susamlarla düz çizgiler çizeceğiz, ip gerip çember yapacağız. Sonunda Geombala oynayacağız. Hazır mısın?</p>
+      <button type="button" class="btn btn--accent btn--big" id="btn-start">Hadi çizelim!</button>
+    </div>
+  </div>
+
+  <div class="finish" id="finish" hidden>
+    <div class="intro__card">
+      <p class="eyebrow">Yaşasın!</p>
+      <h2 class="intro__title">Geombala bitti, harikasın!</h2>
+      <p class="intro__text" id="finish-text"></p>
+      <div class="intro__actions">
+        <button type="button" class="btn btn--accent" id="btn-again">Bir daha oynayalım</button>
+      </div>
+    </div>
+  </div>
+
+  <aside class="lesson ui" id="lesson" aria-live="polite">
+    <div class="lesson__head">
+      <span class="lesson__count" id="lesson-count">Bölüm 1 / 9</span>
+      <span class="score" id="score" hidden></span>
+      <button type="button" class="lesson__collapse" id="btn-collapse" aria-expanded="true" aria-controls="lesson-body">Küçült</button>
+    </div>
+    <div id="lesson-body">
+      <h2 class="lesson__title" id="lesson-title"></h2>
+      <div class="lesson__text" id="lesson-text"></div>
+      <div class="lesson__sliders" id="lesson-sliders" hidden></div>
+      <div class="choices" id="choices" hidden></div>
+      <p class="readout" id="readout" hidden></p>
+      <div class="lesson__actions">
+        <button type="button" class="btn btn--accent" id="btn-action" hidden></button>
+        <button type="button" class="btn" id="btn-action2" hidden></button>
+      </div>
+    </div>
+  </aside>
+
+  <nav class="dock ui" id="dock" aria-label="Bölümler">
+    <button type="button" class="btn btn--ghost" id="btn-prev" title="Önceki bölüm (←)">← Geri</button>
+    <ol class="dots" id="dots"></ol>
+    <button type="button" class="btn btn--accent" id="btn-next" title="Sonraki bölüm (→)">Devam →</button>
+    <span class="dock__sep"></span>
+    <button type="button" class="toggle" data-toggle="autoplay" aria-pressed="false" title="Kendi kendine ilerlesin"><i></i><span>Kendi ilerlesin</span></button>
+    <button type="button" class="toggle" data-toggle="sound" aria-pressed="false" title="Ses"><i></i><span>Ses</span></button>
+  </nav>
+
+  <p class="keys ui" id="keys" aria-hidden="true">
+    <kbd>←</kbd><kbd>→</kbd> bölüm · <kbd>␣</kbd> düğme · <kbd>H</kbd> sadece sahne
+  </p>
+
+  <button type="button" class="reveal" id="btn-show-ui" hidden>Yazıları geri getir</button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <footer class="credit ui">Küçük Dersler · MEB 5. sınıf Matematik ders kitabındaki etkinliklerden uyarlanmıştır.</footer>
+
+  <noscript><p class="noscript">Bıdık'ı görebilmek için JavaScript ve WebGL gerekiyor.</p></noscript>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
