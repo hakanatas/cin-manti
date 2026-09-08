@@ -247,7 +247,11 @@ const ctx = {
   sound,
   bidik,
   later(sec, fn) {
-    timers.push(tweens.wait(null, sec).then(fn));
+    // each timer gets its own cancellation context so leaving the chapter
+    // really stops it (a pending line must not land on the next chapter)
+    const c = { cancelled: false };
+    timers.push(c);
+    tweens.wait(c, sec).then(fn).catch(() => {});
   },
   say(text, hold = 4) {
     bubble.text = text;

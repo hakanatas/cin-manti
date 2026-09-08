@@ -196,7 +196,11 @@ const ctx = {
   sound,
   vec: (x, y, z) => new THREE.Vector3(x, y, z),
   later(sec, fn) {
-    timers.push(tweens.wait(null, sec).then(fn));
+    // each timer gets its own cancellation context so leaving the chapter
+    // really stops it (a pending line must not land on the next chapter)
+    const c = { cancelled: false };
+    timers.push(c);
+    tweens.wait(c, sec).then(fn).catch(() => {});
   },
   say(text, hold = 4) {
     bubble.text = text;
@@ -606,10 +610,13 @@ function frame() {
   }
   renderer.render(scene, camera);
 }
-// point labels are created lazily; remove their DOM when geo clears
+// point labels are created lazily; remove their DOM when geo clears.
+// Notation tags belong to the drawing too, so they go with it — otherwise a
+// slider redraw stacks a fresh copy of every label on top of the old ones.
 const origClear = geo.clear.bind(geo);
 geo.clear = () => {
   for (const l of geo.labels) l.el?.remove();
+  ctx.clearNotation();
   origClear();
 };
 
