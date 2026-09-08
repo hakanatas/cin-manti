@@ -90,6 +90,15 @@ with the real terminology.
 
 Open it at `/YZ-nasil-calisir/` from the same static server.
 
+The second lesson, **"Geometrik şekiller"** (basic geometric figures, 5th
+grade maths, adapted from the MEB textbook unit), lives at
+`geometrik-sekiller/`: Bıdık's dough board is the plane; children place
+points, fill the gap between two points, turn a segment into a ray and a
+line, rotate an angle to find the right angle, stretch a rope with the
+dumplings to form a circle, pick the shortest path to a line (the
+perpendicular), build a parallel line, and finish with the Geombala
+notation game. Open it at `/geometrik-sekiller/`.
+
 ## Third-party
 
 - Three.js r170 (MIT) — `vendor/three/` (see `vendor/three/LICENSE`)
