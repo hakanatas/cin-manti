@@ -99,6 +99,15 @@ dumplings to form a circle, pick the shortest path to a line (the
 perpendicular), build a parallel line, and finish with the Geombala
 notation game. Open it at `/geometrik-sekiller/`.
 
+The third lesson, **"Açılar ve çokgenler"** (angles and polygons, same
+textbook), lives at `acilar-cokgenler/`: measuring angles in degrees with a
+protractor, congruent angles, intersecting and perpendicular lines,
+parallel and coincident lines, complementary and supplementary angles, a
+transversal across parallels, building polygons from lines, polygon
+elements and diagonals, regular polygons, triangles by angle, and a quiz.
+
+A landing page listing all lessons lives at `dersler/` (`/dersler/`).
+
 ## Third-party
 
 - Three.js r170 (MIT) — `vendor/three/` (see `vendor/three/LICENSE`)

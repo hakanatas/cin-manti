@@ -14,7 +14,7 @@ export class GeoScene extends THREE.Group {
     this.mouths = mouths;
     this.W = 6.4;
     this.D = 4.4;
-    this.surfaceY = 0.14;
+    this.surfaceY = 0.175;
 
     // board
     const wood = makeBambooTexture({ seed: 21 });
@@ -27,10 +27,10 @@ export class GeoScene extends THREE.Group {
     this.add(board);
     this.board = board;
     // flour dusting (soft disc)
-    const dust = new THREE.Mesh(new THREE.CircleGeometry(2.4, 48), new THREE.MeshStandardMaterial({ color: '#fbf5ea', roughness: 1, transparent: true, opacity: 0.55 }));
+    const dust = new THREE.Mesh(new THREE.CircleGeometry(2.2, 48), new THREE.MeshStandardMaterial({ color: '#fbf5ea', roughness: 1, transparent: true, opacity: 0.22, depthWrite: false }));
     dust.rotation.x = -Math.PI / 2;
-    dust.position.set(0.2, this.surfaceY + 0.002, 0.1);
-    dust.scale.set(1.35, 1, 0.85);
+    dust.position.set(0.1, this.surfaceY + 0.002, 0.15);
+    dust.scale.set(1.25, 1, 0.8);
     this.add(dust);
 
     this.pointMat = new THREE.MeshPhysicalMaterial({ color: palette.terracotta, roughness: 0.35, clearcoat: 0.8 });
@@ -416,5 +416,133 @@ function rulerTexture() {
   g.fillText('cm', 1000, 66);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+// ---------------------------------------------------------------------------
+// Additions for lesson 03: protractor, sweeps, coloured arcs, polygons
+// ---------------------------------------------------------------------------
+const KIND_COLORS = { dar: '#e2557e', dik: '#5b7c99', genis: '#f0b41f', dogru: '#4a2e1e', tam: '#4a2e1e' };
+export function angleKind(deg) {
+  if (Math.abs(deg - 90) < 1.5) return 'dik';
+  if (Math.abs(deg - 180) < 1.5) return 'dogru';
+  if (deg >= 359) return 'tam';
+  return deg < 90 ? 'dar' : 'genis';
+}
+export const KIND_LABEL = { dar: 'dar açı', dik: 'dik açı', genis: 'geniş açı', dogru: 'doğru açı', tam: 'tam açı' };
+
+Object.assign(GeoScene.prototype, {
+  kindMat(kind) {
+    this._kindMats = this._kindMats || {};
+    if (!this._kindMats[kind]) this._kindMats[kind] = new THREE.MeshStandardMaterial({ color: KIND_COLORS[kind] || '#4a2e1e', roughness: 0.6 });
+    return this._kindMats[kind];
+  },
+  /** Direction on the board for an angle in degrees (counter-clockwise seen from above). */
+  dirDeg(deg) {
+    const a = (deg * Math.PI) / 180;
+    return new THREE.Vector3(Math.cos(a), 0, -Math.sin(a));
+  },
+  /** Arc from startDeg sweeping sweepDeg counter-clockwise. */
+  arcSweep(v, startDeg, sweepDeg, r = 0.5, mat = this.accentMat, radius = 0.018) {
+    const pts = [];
+    const n = Math.max(8, Math.round(Math.abs(sweepDeg) / 4));
+    for (let i = 0; i <= n; i++) {
+      const d = this.dirDeg(startDeg + (sweepDeg * i) / n);
+      pts.push(new THREE.Vector3(v.x + d.x * r, v.y - 0.02, v.z + d.z * r));
+    }
+    if (pts.length < 2) return null;
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), Math.max(8, n * 2), radius, 8, false), mat);
+    this.drawing.add(tube);
+    return tube;
+  },
+  /** Line through point p at angle deg (both directions to the board edge). */
+  lineAt(p, deg, mat = this.lineMat) {
+    const d = this.dirDeg(deg);
+    const a = p.clone().addScaledVector(d, 0.5);
+    const b = p.clone().addScaledVector(d, -0.5);
+    return this.line(a, b, mat);
+  },
+  rayAt(p, deg, mat = this.lineMat) {
+    return this.ray(p, p.clone().addScaledVector(this.dirDeg(deg), 0.5), mat);
+  },
+  dashed(a, b, mat = this.accentMat) {
+    const g = new THREE.Group();
+    const n = Math.max(3, Math.round(a.distanceTo(b) / 0.22));
+    for (let i = 0; i < n; i++) {
+      const s = a.clone().lerp(b, i / n);
+      const e = a.clone().lerp(b, (i + 0.55) / n);
+      g.add(this._thin(s, e));
+    }
+    g.children.forEach((m) => (m.material = mat));
+    this.drawing.add(g);
+    return g;
+  },
+  /** Filled polygon on the board from XZ points. */
+  polygonFill(points, color = '#f4d7c4') {
+    const shape = new THREE.Shape();
+    points.forEach((p, i) => (i ? shape.lineTo(p.x, -p.z) : shape.moveTo(p.x, -p.z)));
+    shape.closePath();
+    const m = new THREE.Mesh(new THREE.ShapeGeometry(shape), new THREE.MeshStandardMaterial({ color, roughness: 0.9, transparent: true, opacity: 0.85, side: THREE.DoubleSide }));
+    m.rotation.x = -Math.PI / 2;
+    m.position.y = this.surfaceY + 0.008;
+    this.drawing.add(m);
+    return m;
+  },
+  /** Protractor disc (full = 360, else half) centred at v with 0° along +x. */
+  protractor(v, full = true, r = 1.45) {
+    if (!this._protTex) this._protTex = { full: protractorTexture(true), half: protractorTexture(false) };
+    const tex = full ? this._protTex.full : this._protTex.half;
+    const m = new THREE.Mesh(new THREE.CircleGeometry(r, 96, 0, full ? Math.PI * 2 : Math.PI), new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0.92, side: THREE.DoubleSide }));
+    m.rotation.x = -Math.PI / 2;
+    m.position.copy(v).setY(this.surfaceY + 0.006);
+    this.drawing.add(m);
+    return m;
+  },
+});
+
+function protractorTexture(full) {
+  const S = 1024;
+  const c = document.createElement('canvas');
+  c.width = S;
+  c.height = S;
+  const g = c.getContext('2d');
+  const cx = S / 2;
+  const cy = S / 2;
+  const R = S / 2 - 6;
+  g.fillStyle = 'rgba(251, 246, 236, 0.9)';
+  g.beginPath();
+  if (full) g.arc(cx, cy, R, 0, Math.PI * 2);
+  else {
+    g.arc(cx, cy, R, Math.PI, 0);
+    g.closePath();
+  }
+  g.fill();
+  g.strokeStyle = '#4a2e1e';
+  g.lineWidth = 3;
+  g.stroke();
+  g.fillStyle = '#4a2e1e';
+  g.strokeStyle = '#4a2e1e';
+  const maxDeg = full ? 360 : 180;
+  for (let d = 0; d < maxDeg + (full ? 0 : 1); d++) {
+    const a = (-d * Math.PI) / 180; // canvas y is down; counter-clockwise on the board maps to negative canvas angle
+    const len = d % 10 === 0 ? 46 : d % 5 === 0 ? 30 : 16;
+    g.lineWidth = d % 10 === 0 ? 3 : 1.5;
+    g.beginPath();
+    g.moveTo(cx + Math.cos(a) * (R - len), cy + Math.sin(a) * (R - len));
+    g.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R);
+    g.stroke();
+    if (d % 10 === 0 && (full ? d < 360 : d <= 180)) {
+      g.font = '600 30px "Instrument Sans", sans-serif';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillText(String(d), cx + Math.cos(a) * (R - 78), cy + Math.sin(a) * (R - 78));
+    }
+  }
+  g.beginPath();
+  g.arc(cx, cy, 8, 0, Math.PI * 2);
+  g.fill();
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 4;
   return t;
 }

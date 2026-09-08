@@ -6,8 +6,9 @@ import { SoundKit } from '../../js/audio.js';
 import { makeMouthTextures } from '../../js/textures.js';
 import { Bidik } from '../../YZ-nasil-calisir/js/bidik.js';
 import { Confetti } from '../../YZ-nasil-calisir/js/confetti.js';
-import { GeoScene } from './geo.js';
-import { STEPS, GAME, NOTATIONS } from './steps.js';
+import { GeoScene } from '../../geometrik-sekiller/js/geo.js';
+import { STEPS, QUIZ } from './steps.js';
+import { angleKind, KIND_LABEL } from '../../geometrik-sekiller/js/geo.js';
 
 const PALETTE = {
   cream: '#f5eee3',
@@ -36,6 +37,8 @@ const dom = {
   text: $('#lesson-text'),
   sliders: $('#lesson-sliders'),
   choices: $('#choices'),
+  toggles: $('#toggles'),
+  target: $('#target'),
   readout: $('#readout'),
   score: $('#score'),
   action: $('#btn-action'),
@@ -143,8 +146,8 @@ const notations = [];
 // ---------------------------------------------------------------------------
 const FOCUS = {
   board: { target: new THREE.Vector3(0.4, 0.2, 0.2), dist: 8.6, az: 0.05, el: 0.72, bidik: [4.1, 0, 1.5] },
-  angle: { target: new THREE.Vector3(0.9, 0.2, -0.1), dist: 7.4, az: 0.05, el: 0.7, bidik: [4.1, 0, 1.5] },
-  circle: { target: new THREE.Vector3(0.5, 0.3, 0.3), dist: 9.2, az: 0.08, el: 0.85, bidik: [0.3, 0.175, 0.1] },
+  angle: { target: new THREE.Vector3(0.6, 0.2, 0.2), dist: 8.2, az: 0.05, el: 0.65, bidik: [4.1, 0, 1.5] },
+  circle: { target: new THREE.Vector3(0.5, 0.3, 0.3), dist: 9.2, az: 0.08, el: 0.85, bidik: [0.3, 0.14, 0.1] },
   bidik: { target: new THREE.Vector3(2.2, 0.7, 0.9), dist: 6.2, az: 0.2, el: 1.15, bidik: [2.8, 0, 1.8] },
 };
 let focusCtx = null;
@@ -219,77 +222,84 @@ const ctx = {
       bidik.position.y = geo.surfaceY * t + Math.sin(t * Math.PI * 3) ** 2 * 0.1;
     }, Ease.inOutCubic).catch(() => {});
   },
-  startGame() {
-    state.round = 0;
+  angleKind,
+  KIND_LABEL,
+  toggle: {},
+  /** Finish grow/pop animations immediately (for slider-driven redraws). */
+  instant() {
+    geo.drawing.traverse((o) => {
+      if (o.userData.grow) {
+        o.scale.y = Math.max(0.001, o.userData.grow.len);
+        o.position.copy(o.userData.grow.a).lerp(o.userData.grow.b, 0.5);
+        o.userData.onDone?.();
+        o.userData.grow = undefined;
+      }
+      if (o.userData.target !== undefined) {
+        o.userData.delay = 0;
+        o.scale.setScalar(Math.max(0.001, o.userData.target));
+      }
+    });
+  },
+  setTarget(deg) {
+    dom.target.hidden = deg === null;
+    if (deg !== null) dom.target.innerHTML = `Bıdık'ın isteği: <b>${deg}°</b> yap`;
+  },
+  startQuiz() {
+    const host = dom.text.querySelector('#quiz');
+    if (!host) return;
+    host.innerHTML = '';
+    const picked = QUIZ.slice().sort(() => Math.random() - 0.5).slice(0, 5);
+    let correct = 0;
+    let answered = 0;
     state.score = 0;
     dom.score.hidden = false;
-    updateScore();
-    nextRound();
+    dom.score.innerHTML = 'Puan <b>0</b> / 5';
+    picked.forEach((q, qi) => {
+      const item = document.createElement('div');
+      item.className = 'quiz__item';
+      const opts = q.options.map((o, i) => ({ o, i })).sort(() => Math.random() - 0.5);
+      item.innerHTML = `<p class="quiz__q">${qi + 1}. ${q.q}</p><div class="quiz__opts"></div><p class="quiz__why" hidden></p>`;
+      const box = item.querySelector('.quiz__opts');
+      const why = item.querySelector('.quiz__why');
+      for (const { o, i } of opts) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'btn';
+        b.textContent = o;
+        b.addEventListener('click', () => {
+          if (item.classList.contains('is-done')) return;
+          item.classList.add('is-done');
+          answered++;
+          const ok = i === q.answer;
+          if (ok) correct++;
+          state.score = correct;
+          dom.score.innerHTML = `Puan <b>${correct}</b> / 5`;
+          b.classList.add(ok ? 'is-right' : 'is-wrong');
+          why.hidden = false;
+          why.textContent = ok ? q.why : q.nope;
+          sound.play(ok ? 'yum' : 'grab', { volume: 0.6 });
+          if (ok) {
+            bidik.react('joy', 1.5);
+            bidik.doHop(0.7);
+          } else bidik.react('worried', 1.5);
+          if (answered === 5) finishQuiz(correct);
+        });
+        box.appendChild(b);
+      }
+      host.appendChild(item);
+    });
   },
 };
-
-function updateScore() {
-  dom.score.innerHTML = `Puan <b>${state.score}</b> / 5`;
-}
-
-let order = [];
-function nextRound() {
-  const host = dom.text.querySelector('#quiz');
-  if (!host) return;
-  if (state.round === 0) order = GAME.slice().sort(() => Math.random() - 0.5).slice(0, 5);
-  if (state.round >= 5) {
-    finishGame();
-    return;
-  }
-  const round = order[state.round];
-  geo.clear();
-  ctx.clearNotation();
-  round.draw(ctx);
-  const options = [round.answer, ...NOTATIONS.filter((n) => n !== round.answer).sort(() => Math.random() - 0.5).slice(0, 2)].sort(() => Math.random() - 0.5);
-  host.innerHTML = `<p class="game__round">Tur ${state.round + 1} / 5</p><p class="game__q">Tahtadaki çizimin gösterimi hangisi?</p><div class="game__opts"></div><p class="game__why" hidden></p>`;
-  const opts = host.querySelector('.game__opts');
-  const why = host.querySelector('.game__why');
-  let done = false;
-  for (const label of options) {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'btn';
-    b.textContent = label;
-    b.addEventListener('click', () => {
-      if (done) return;
-      done = true;
-      const ok = label === round.answer;
-      b.classList.add(ok ? 'is-right' : 'is-wrong');
-      if (ok) state.score++;
-      updateScore();
-      why.hidden = false;
-      why.textContent = ok ? `Doğru! Bu bir ${describe(round.key)}.` : `Bu bir ${describe(round.key)}; doğru gösterim: ${round.answer}.`;
-      sound.play(ok ? 'yum' : 'grab', { volume: 0.6 });
-      if (ok) {
-        bidik.react('joy', 1.5);
-        bidik.doHop(0.7);
-      } else bidik.react('worried', 1.5);
-      opts.querySelectorAll('.btn').forEach((x) => (x.disabled = true));
-      state.round++;
-      setTimeout(nextRound, 1500);
-    });
-    opts.appendChild(b);
-  }
-}
-function describe(key) {
-  return { point: 'nokta', segment: 'doğru parçası', ray: 'ışın', line: 'doğru', angle: 'açı', length: 'doğru parçasının uzunluğu' }[key];
-}
-function finishGame() {
-  const s = state.score;
+function finishQuiz(correct) {
   dom.finishText.textContent =
-    s === 5 ? 'Beşte beş! Nokta, doğru parçası, ışın, doğru, açı… Hepsini tanıyorsun.' : `${s} doğru, ${5 - s} yanlış. Olsun, Bıdık da ilk seferde karıştırmıştı. Bölümlere geri dönüp bir daha bakabilirsin.`;
+    correct === 5 ? 'Beşte beş! Açılar, doğrular, çokgenler… Hepsi cebinde.' : `${correct} doğru, ${5 - correct} yanlış. Hiç dert değil; bölümlere geri dönüp bir daha bakabilirsin.`;
   setTimeout(() => {
     dom.finish.hidden = false;
     bidik.celebrate();
     confetti.burst(bidik.position.clone().add(new THREE.Vector3(0, 1.4, 0)), 120);
     sound.play('refill', { volume: 0.7 });
     focus('bidik');
-  }, 700);
+  }, 800);
 }
 
 // ---------------------------------------------------------------------------
@@ -331,8 +341,32 @@ function go(i, instant = false) {
   dom.collapse.textContent = 'Küçült';
   dom.lesson.scrollTop = 0;
   dom.finish.hidden = true;
-  dom.score.hidden = !s.game;
+  dom.score.hidden = !s.quiz;
+  dom.target.hidden = true;
+  ctx.toggle = {};
+  dom.toggles.innerHTML = '';
+  dom.toggles.hidden = !s.toggles;
+  if (s.toggles) {
+    for (const t of s.toggles) {
+      ctx.toggle[t.id] = !!t.on;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn';
+      b.textContent = t.label;
+      b.setAttribute('aria-pressed', String(!!t.on));
+      b.addEventListener('click', () => {
+        ctx.toggle[t.id] = !ctx.toggle[t.id];
+        b.setAttribute('aria-pressed', String(ctx.toggle[t.id]));
+        s.onToggle?.(ctx);
+      });
+      dom.toggles.appendChild(b);
+    }
+  }
   canvas.classList.toggle('is-drawing', !!s.click);
+  ctx.lastState = null;
+  ctx.lastType = null;
+  ctx.saidDik = false;
+  ctx.matched = false;
   ctx.clearNotation();
   bidik.calmDown();
   if (s.mood) bidik.setMood(s.mood);
@@ -413,7 +447,7 @@ dom.start.addEventListener('click', () => {
 dom.again.addEventListener('click', () => {
   dom.finish.hidden = true;
   state.step = -1;
-  go(STEPS.length - 1);
+  go(0);
 });
 function setToggle(name, on) {
   state[name] = on;
@@ -588,10 +622,11 @@ async function boot() {
   dom.loadingBar.style.width = '80%';
   document.body.classList.add('is-intro');
   // a little welcome drawing
-  const a = geo.addPoint(-1.4, 0.5, 'A').pos;
-  const b = geo.addPoint(0.9, -0.4, 'B').pos;
-  geo.segment(a, b);
-  geo.circle(geo.p(-0.2, 0.9).setY(geo.surfaceY + 0.06), 1.0);
+  const o = geo.p(-0.6, 0.4);
+  geo.protractor(o, true, 1.3);
+  geo.rayAt(o, 0);
+  geo.rayAt(o, 60);
+  geo.arcSweep(o, 0, 60, 0.55, geo.kindMat('dar'), 0.024);
   bidik.setMood('happy');
   focus('bidik', true);
   renderer.compile(scene, camera);

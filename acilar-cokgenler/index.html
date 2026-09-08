@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Yapay zeka nasıl çalışır? — Küçük Dersler</title>
-  <meta name="description" content="Çırak robot aşçı Bıdık mantıyı ne kadar pişireceğini örneklerden öğreniyor: tahmin et, yanıl, düzelt, tekrar. İlkokul ve ortaokul için etkileşimli yapay zeka dersi." />
+  <title>Açılar ve çokgenler — Küçük Dersler</title>
+  <meta name="description" content="Dereceyle açı ölçme, ters ve komşu açılar, paralel ve dik doğrular, çokgenler ve üçgenler. Bıdık ile 5. sınıf geometri." />
   <meta name="theme-color" content="#f5eee3" />
-  <meta property="og:title" content="Yapay zeka nasıl çalışır?" />
-  <meta property="og:description" content="Çırak robot aşçı Bıdık ile yapay zekanın nasıl öğrendiğini keşfet. Sekiz kısa bölüm, oyunlar ve mini sınav." />
+  <meta property="og:title" content="Açılar ve çokgenler: Bıdık ile ölç, döndür, çiz" />
+  <meta property="og:description" content="Açıölçer, ters açılar, paralel doğrular, çokgenler. On bir kısa bölüm ve bir sınav." />
   <meta property="og:type" content="website" />
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
   <link rel="preload" href="../assets/fonts/Fraunces-Variable.ttf" as="font" type="font/ttf" crossorigin />
@@ -23,14 +23,14 @@
   </script>
 </head>
 <body>
-  <canvas id="stage" tabindex="0" role="application" aria-label="Etkileşimli 3B ders sahnesi. Sol ve sağ ok tuşlarıyla bölümler arasında geçin."></canvas>
+  <canvas id="stage" tabindex="0" role="application" aria-label="Etkileşimli 3B geometri sahnesi. Sol ve sağ ok tuşlarıyla bölümler arasında geçin."></canvas>
   <div class="vignette" aria-hidden="true"></div>
   <div class="tags" id="tags" aria-hidden="true"></div>
 
   <div class="loading" id="loading" aria-live="polite">
     <div class="loading__mark">Küçük Dersler</div>
     <div class="loading__bar"><span id="loading-bar"></span></div>
-    <p class="loading__text" id="loading-text">Bıdık şapkasını takıyor…</p>
+    <p class="loading__text" id="loading-text">Bıdık tahtaya un serpiyor…</p>
   </div>
 
   <header class="topbar ui">
@@ -41,24 +41,24 @@
   </header>
 
   <section class="hero ui">
-    <p class="eyebrow">Ders 01 · Yapay zeka</p>
-    <h1 class="headline">Yapay zeka<br />nasıl çalışır?</h1>
-    <p class="lede"><em>Tahmin ederek öğrenir.</em> Gel, çırak robot aşçı Bıdık'la birlikte keşfedelim.</p>
+    <p class="eyebrow">Ders 03 · Matematik · 5. sınıf</p>
+    <h1 class="headline">Açılar ve<br />çokgenler</h1>
+    <p class="lede"><em>Ölç, döndür, çiz.</em> Açıölçerden çokgenlere, Bıdık ile.</p>
   </section>
 
   <div class="intro" id="intro">
     <div class="intro__card">
       <p class="eyebrow">Selam!</p>
-      <h2 class="intro__title">Ben Bıdık! Çırak robot aşçıyım.</h2>
-      <p class="intro__text">Küçük bir derdim var: mantılarım bazen çiğ kalıyor, bazen lapa oluyor. Ne kadar pişireceğimi bir türlü tutturamıyorum. Bana yardım eder misin? Sekiz kısa bölüm, birkaç oyun, sonunda da minik bir sınav. Söz, sıkılmayacaksın.</p>
-      <button type="button" class="btn btn--accent btn--big" id="btn-start">Tabii, hadi başlayalım!</button>
+      <h2 class="intro__title">Tahtaya bir açıölçer koydum!</h2>
+      <p class="intro__text">Bugün açıları ölçeceğiz, doğruları kesiştireceğiz, doğrulardan çokgenler yapacağız. On bir kısa bölüm, bol kaydırıcı, sonunda küçük bir sınav. Hazır mısın?</p>
+      <button type="button" class="btn btn--accent btn--big" id="btn-start">Hadi ölçelim!</button>
     </div>
   </div>
 
   <div class="finish" id="finish" hidden>
     <div class="intro__card">
       <p class="eyebrow">Yaşasın!</p>
-      <h2 class="intro__title">Dersi bitirdin, harikasın!</h2>
+      <h2 class="intro__title">Sınav bitti, harikasın!</h2>
       <p class="intro__text" id="finish-text"></p>
       <div class="intro__actions">
         <button type="button" class="btn btn--accent" id="btn-again">Bir daha oynayalım</button>
@@ -68,28 +68,18 @@
 
   <aside class="lesson ui" id="lesson" aria-live="polite">
     <div class="lesson__head">
-      <span class="lesson__count" id="lesson-count">01 / 08</span>
+      <span class="lesson__count" id="lesson-count">Bölüm 1 / 11</span>
       <span class="score" id="score" hidden></span>
       <button type="button" class="lesson__collapse" id="btn-collapse" aria-expanded="true" aria-controls="lesson-body">Küçült</button>
     </div>
     <div id="lesson-body">
       <h2 class="lesson__title" id="lesson-title"></h2>
       <div class="lesson__text" id="lesson-text"></div>
-      <div class="lesson__stats" id="lesson-stats" hidden>
-        <div class="stat"><span class="stat__label">Kaç kez baktı</span><span class="stat__value" id="stat-steps">0</span></div>
-        <div class="stat"><span class="stat__label">Hata puanı</span><span class="stat__value" id="stat-loss">–</span></div>
-        <div class="stat"><span class="stat__label">Doğru bildi</span><span class="stat__value" id="stat-acc">–</span></div>
-        <canvas class="spark" id="spark" width="220" height="44" aria-label="Hata puanı eğrisi"></canvas>
-      </div>
-      <div class="lesson__sliders" id="lesson-sliders" hidden>
-        <label>Boy <input type="range" id="sl-sugar" min="0" max="100" value="62" /></label>
-        <label>Süre <input type="range" id="sl-salt" min="0" max="100" value="45" /></label>
-      </div>
+      <div class="lesson__sliders" id="lesson-sliders" hidden></div>
+      <div class="target" id="target" hidden></div>
+      <div class="toggles" id="toggles" hidden></div>
+      <div class="choices" id="choices" hidden></div>
       <p class="readout" id="readout" hidden></p>
-      <div class="guess" id="guess" hidden>
-        <button type="button" class="btn btn--sweet" id="guess-sweet">Tam kıvamında!</button>
-        <button type="button" class="btn btn--salty" id="guess-salty">Olmamış!</button>
-      </div>
       <div class="lesson__actions">
         <button type="button" class="btn btn--accent" id="btn-action" hidden></button>
         <button type="button" class="btn" id="btn-action2" hidden></button>
@@ -107,12 +97,12 @@
   </nav>
 
   <p class="keys ui" id="keys" aria-hidden="true">
-    <kbd>←</kbd><kbd>→</kbd> bölüm · <kbd>␣</kbd> düğme · <kbd>E</kbd> antrenman · <kbd>R</kbd> unut · <kbd>H</kbd> sadece sahne
+    <kbd>←</kbd><kbd>→</kbd> bölüm · <kbd>␣</kbd> düğme · <kbd>H</kbd> sadece sahne
   </p>
 
   <button type="button" class="reveal" id="btn-show-ui" hidden>Yazıları geri getir</button>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <footer class="credit ui">Küçük Dersler · Bıdık gerçekten senin tarayıcında öğreniyor; hiçbir şey kimseye gönderilmiyor.</footer>
+  <footer class="credit ui">Küçük Dersler · MEB 5. sınıf Matematik ders kitabındaki etkinliklerden uyarlanmıştır.</footer>
 
   <noscript><p class="noscript">Bıdık'ı görebilmek için JavaScript ve WebGL gerekiyor.</p></noscript>
   <script type="module" src="./js/main.js"></script>
