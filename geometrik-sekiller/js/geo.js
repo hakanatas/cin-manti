@@ -26,12 +26,6 @@ export class GeoScene extends THREE.Group {
     board.castShadow = true;
     this.add(board);
     this.board = board;
-    // flour dusting (soft disc)
-    const dust = new THREE.Mesh(new THREE.CircleGeometry(2.2, 48), new THREE.MeshStandardMaterial({ color: '#fbf5ea', roughness: 1, transparent: true, opacity: 0.22, depthWrite: false }));
-    dust.rotation.x = -Math.PI / 2;
-    dust.position.set(0.1, this.surfaceY + 0.002, 0.15);
-    dust.scale.set(1.25, 1, 0.8);
-    this.add(dust);
 
     this.pointMat = new THREE.MeshPhysicalMaterial({ color: palette.terracotta, roughness: 0.35, clearcoat: 0.8 });
     this.pointGeo = new THREE.SphereGeometry(0.075, 20, 14);

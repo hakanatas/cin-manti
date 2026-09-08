@@ -23,6 +23,10 @@ export const STEPS = [
       c.geo.clear();
       c.geo.showKids(false);
       c.names = 0;
+      // Bıdık's own first point, so the board is not empty
+      c.later(0.9, () => {
+        if (c.geo.points.length === 0) c.geo.addPoint(-0.6, 0.3, 'A');
+      });
     },
     onClick(c, x, z) {
       if (c.geo.points.length >= 8) return;
@@ -231,7 +235,7 @@ export const STEPS = [
       } else if (v.angle > 90) kind = 'geniş açı';
       else c.saidRight = false;
       c.clearNotation();
-      c.notation(`KLM açısı · ${v.angle}° · ${kind}`, c.L.clone().add(c.vec(0.9, 0.5, -1.1)));
+      c.notation(`KLM açısı · ${v.angle}° · ${kind}`, c.L.clone().add(c.vec(1.1, 0.45, 0.65)));
     },
   },
   {

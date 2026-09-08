@@ -145,20 +145,26 @@ const notations = [];
 // Camera presets & Bıdık spots
 // ---------------------------------------------------------------------------
 const FOCUS = {
-  board: { target: new THREE.Vector3(0.4, 0.2, 0.2), dist: 8.6, az: 0.05, el: 0.72, bidik: [4.1, 0, 1.5] },
-  angle: { target: new THREE.Vector3(0.6, 0.2, 0.2), dist: 8.2, az: 0.05, el: 0.65, bidik: [4.1, 0, 1.5] },
+  board: { target: new THREE.Vector3(0.4, 0.2, -0.1), dist: 8.6, az: 0.05, el: 0.72, bidik: [2.6, 0.175, -1.75] },
+  angle: { target: new THREE.Vector3(0.6, 0.2, 0.2), dist: 8.2, az: 0.05, el: 0.65, bidik: [2.6, 0.175, -1.75] },
   circle: { target: new THREE.Vector3(0.5, 0.3, 0.3), dist: 9.2, az: 0.08, el: 0.85, bidik: [0.3, 0.14, 0.1] },
   bidik: { target: new THREE.Vector3(2.2, 0.7, 0.9), dist: 6.2, az: 0.2, el: 1.15, bidik: [2.8, 0, 1.8] },
 };
 let focusCtx = null;
 function focus(name, instant = false) {
   const f = FOCUS[name];
-  const fit = clamp(1.5 / camera.aspect, 1, 2.4);
+  resize(); // the view offset depends on whether the panel is showing
+  // the text panel covers the left part of the viewport on desktop: zoom out
+  // a little so the drawing still fits in the free area
+  const inset = name === 'bidik' ? 0 : uiInset();
+  const fit = clamp(1.3 / (camera.aspect * (1 - inset)), inset > 0 ? 1.3 : 1, 2.8);
   const to = new THREE.Vector3(Math.sin(f.az) * Math.sin(f.el), Math.cos(f.el), Math.cos(f.az) * Math.sin(f.el)).multiplyScalar(f.dist * fit).add(f.target);
   const fromPos = camera.position.clone();
   const fromTarget = controls.target.clone();
   const fromB = bidik.position.clone();
   const toB = f.bidik ? new THREE.Vector3(f.bidik[0], f.bidik[1], f.bidik[2]) : bidik.position.clone();
+  // on narrow screens pull Bıdık towards the board so he stays in frame
+  if (f.bidik && window.innerWidth <= 900) toB.set(f.bidik[0] * 0.7, f.bidik[1], f.bidik[2] * 0.55);
   if (focusCtx) focusCtx.cancelled = true;
   if (instant) {
     camera.position.copy(to);
@@ -467,6 +473,7 @@ function setUiHidden(hidden) {
   state.uiHidden = hidden;
   document.body.classList.toggle('ui-hidden', hidden);
   dom.showUi.hidden = !hidden;
+  refocus();
 }
 dom.hideUi.addEventListener('click', () => setUiHidden(true));
 dom.showUi.addEventListener('click', () => setUiHidden(false));
@@ -549,16 +556,36 @@ function resize() {
   const h = window.innerHeight;
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
-  if (w / h > 1.4) camera.setViewOffset(w, h, -w * 0.14, -h * 0.02, w, h);
+  const inset = uiInset();
+  const shift = uiShiftY(h);
+  if (inset > 0) camera.setViewOffset(w, h, -w * inset * 0.5, -h * 0.02, w, h);
+  else if (shift !== 0) camera.setViewOffset(w, h, 0, shift, w, h);
   else if (w / h < 0.8) camera.setViewOffset(w, h, 0, h * 0.02, w, h);
   else camera.clearViewOffset();
   camera.updateProjectionMatrix();
 }
-window.addEventListener('resize', () => {
+/** Fraction of the viewport width hidden behind the lesson panel (desktop layout). */
+function uiInset() {
+  if (state.uiHidden || window.innerWidth <= 900 || !dom.intro.hidden) return 0;
+  const rct = dom.lesson.getBoundingClientRect();
+  if (rct.width === 0 || rct.width > window.innerWidth * 0.6) return 0;
+  return clamp((rct.right + 24) / window.innerWidth, 0, 0.5);
+}
+/** Pixels to lift the scene so it centres between the header and the panel (mobile). */
+function uiShiftY(h) {
+  if (state.uiHidden || window.innerWidth > 900 || !dom.intro.hidden) return 0;
+  const rct = dom.lesson.getBoundingClientRect();
+  if (rct.height === 0) return 0;
+  const top = 126;
+  const bottom = Math.max(top + 120, rct.top - 10);
+  return clamp(h / 2 - (top + bottom) / 2, 0, h * 0.3);
+}
+function refocus() {
   resize();
   if (!dom.intro.hidden) focus('bidik', true);
-  else if (state.step >= 0) focus(STEPS[state.step].focus, true);
-});
+  else if (state.step >= 0 && STEPS[state.step]) focus(STEPS[state.step].focus, true);
+}
+window.addEventListener('resize', refocus);
 resize();
 const clock = new THREE.Clock();
 let time = 0;
@@ -602,7 +629,12 @@ function frame() {
       const hw = t.el.offsetWidth / 2 + 8;
       const hh = t.el.offsetHeight / 2 + 8;
       x = clamp(x, hw, r.width - hw);
-      y = clamp(y, hh + 60, r.height - hh);
+      y = clamp(y, hh + (window.innerWidth <= 900 ? 168 : 84), r.height - hh);
+    } else if (notations.includes(t)) {
+      const hw = t.el.offsetWidth / 2 + 10;
+      const hh = t.el.offsetHeight / 2 + 10;
+      x = clamp(x, hw, r.width - hw);
+      y = clamp(y, hh + 70, r.height - hh - (window.innerWidth > 900 ? 96 : 0));
     }
     t.el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
   }

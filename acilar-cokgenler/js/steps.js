@@ -41,25 +41,17 @@ export const STEPS = [
       const deg = v.angle;
       c.geo.protractor(c.O, true, 1.5);
       c.geo.addPoint(c.O.x, c.O.z, 'O');
-      c.geo.rayAt(c.O, 0).bar.userData.grow = undefined;
+      c.geo.rayAt(c.O, 0);
       const k = c.O.clone().addScaledVector(c.geo.dirDeg(0), 2.2);
       c.geo.addPoint(k.x, k.z, 'K', { size: 0.8 });
       const m = c.O.clone().addScaledVector(c.geo.dirDeg(deg), 2.2);
       c.geo.addPoint(m.x, m.z, 'M', { size: 0.8 });
-      const r = c.geo.rayAt(c.O, deg);
-      r.bar.userData.grow = undefined;
+      c.geo.rayAt(c.O, deg);
       const kind = c.angleKind(deg);
       if (deg > 0) c.geo.arcSweep(c.O, 0, deg, 0.62, c.geo.kindMat(kind), 0.024);
       if (kind === 'dik') c.geo.rightAngleMark(c.O, k, m);
-      c.geo.drawing.traverse((o) => {
-        if (o.userData.grow) {
-          o.scale.y = o.userData.grow.len;
-          o.position.copy(o.userData.grow.a).lerp(o.userData.grow.b, 0.5);
-          o.userData.grow = undefined;
-        }
-        if (o.userData.target !== undefined) o.scale.setScalar(o.userData.target);
-      });
-      c.notation(`m(KOM) = ${deg}° · ${c.KIND_LABEL[kind]}`, c.O.clone().add(c.vec(2.6, 0.5, 1.25)));
+      c.instant();
+      c.notation(`m(KOM) = ${deg}° · ${c.KIND_LABEL[kind]}`, c.O.clone().add(c.vec(0, 0.5, 1.95)));
       // targets
       const t = this.targets[c.targetIndex];
       if (t !== undefined && Math.abs(deg - t) <= 2) {
@@ -112,22 +104,15 @@ export const STEPS = [
         const b = o.clone().addScaledVector(c.geo.dirDeg(deg), 1.5);
         c.geo.addPoint(a.x, a.z, names[1], { size: 0.7 });
         c.geo.addPoint(b.x, b.z, names[2], { size: 0.7 });
-        c.geo.bar(o, a).userData.grow = undefined;
-        c.geo.bar(o, b).userData.grow = undefined;
+        c.geo.bar(o, a);
+        c.geo.bar(o, b);
         c.geo.arcSweep(o, 0, deg, 0.5, c.geo.kindMat(kind), 0.022);
       };
       draw(c.left, c.target, ['B', 'A', 'C'], c.angleKind(c.target));
       draw(c.right, v.mine, ['L', 'K', 'M'], c.angleKind(v.mine));
-      c.geo.drawing.traverse((o) => {
-        if (o.userData.grow) {
-          o.scale.y = o.userData.grow.len;
-          o.position.copy(o.userData.grow.a).lerp(o.userData.grow.b, 0.5);
-          o.userData.grow = undefined;
-        }
-        if (o.userData.target !== undefined) o.scale.setScalar(o.userData.target);
-      });
-      c.notation(`m(ABC) = ${c.target}°`, c.left.clone().add(c.vec(0.7, 0.45, -1.1)), 'measure');
-      c.notation(`m(KLM) = ${v.mine}°`, c.right.clone().add(c.vec(0.7, 0.45, -1.1), 'measure'), 'measure');
+      c.instant();
+      c.notation(`m(ABC) = ${c.target}°`, c.left.clone().add(c.vec(0.75, 0.45, 0.6)), 'measure');
+      c.notation(`m(KLM) = ${v.mine}°`, c.right.clone().add(c.vec(0.75, 0.45, 0.6)), 'measure');
       if (Math.abs(v.mine - c.target) <= 2) {
         c.notation('eş açılar!', c.geo.p(-0.4, -0.9).add(c.vec(0, 0.5, 0)));
         if (!c.matched) {
@@ -183,8 +168,8 @@ export const STEPS = [
       });
       c.instant();
       const dik = Math.abs(t - 90) < 1.5;
-      c.notation(dik ? 'AB ⊥ CD · dik doğrular' : 'AB ve CD kesişen doğrular', O.clone().add(c.vec(0.3, 0.5, -1.7)));
-      c.notation(dik ? '4 dik açı' : `2 ${c.KIND_LABEL.dar}, 2 ${c.KIND_LABEL.genis} · ters açılar eşit`, O.clone().add(c.vec(0.3, 0.45, 1.75)), 'measure');
+      c.notation(dik ? 'AB ⊥ CD · dik doğrular' : 'AB ve CD kesişen doğrular', O.clone().add(c.vec(-1.3, 0.5, -1.8)));
+      c.notation(dik ? '4 dik açı' : `2 ${c.KIND_LABEL.dar}, 2 ${c.KIND_LABEL.genis} · ters açılar eşit`, O.clone().add(c.vec(1.0, 0.45, 1.85)), 'measure');
       if (dik && !c.saidDik) {
         c.saidDik = true;
         c.sound.play('yum', { volume: 0.6 });
@@ -344,6 +329,15 @@ export const STEPS = [
         c.geo.lineAt(O2, 0);
         const mid = O1.clone().add(O2).multiplyScalar(0.5);
         c.geo.lineAt(mid, t, c.geo.accentMat);
+        // name the lines: AB, CD and the transversal EF
+        c.geo.addPoint(-2.3, O1.z, 'A', { size: 0.6 });
+        c.geo.addPoint(2.3, O1.z, 'B', { size: 0.6 });
+        c.geo.addPoint(-2.3, O2.z, 'C', { size: 0.6 });
+        c.geo.addPoint(2.3, O2.z, 'D', { size: 0.6 });
+        const e = mid.clone().addScaledVector(dir, -1.9);
+        const f = mid.clone().addScaledVector(dir, 1.9);
+        c.geo.addPoint(e.x, e.z, 'E', { size: 0.6 });
+        c.geo.addPoint(f.x, f.z, 'F', { size: 0.6 });
         // intersections with the two horizontals
         for (const O of [O1, O2]) {
           const s = (O.z - mid.z) / dir.z;
@@ -351,7 +345,7 @@ export const STEPS = [
           c.geo.addPoint(X.x, X.z, null, { size: 0.7 });
           drawX(X, [0, t, 180, t + 180].map((d) => d % 360).sort((a, b) => a - b), 0.36);
         }
-        c.notation('AB // CD · EF kesen', c.geo.p(2.0, 0.7).add(c.vec(0.3, 0.45, -0.5)));
+        c.notation('AB // CD · EF kesen', c.geo.p(-1.5, -1.75).add(c.vec(0, 0.45, 0)));
       } else {
         const O = c.geo.p(0, 0.1);
         const degs = [0, t, Math.min(170, t + 60)];
@@ -383,7 +377,7 @@ export const STEPS = [
     secondary: 'Baştan',
     enter(c) {
       c.n = 3;
-      c.added = 0;
+      c.added = 1; // start with the first line on the board
       this.render(c);
     },
     act(c) {
@@ -626,6 +620,7 @@ export const STEPS = [
     enter(c) {
       c.geo.clear();
       c.geo.protractor(c.geo.p(-0.2, 0.1), true, 1.4);
+      c.geo.addPoint(-0.2, 0.1, 'O');
       c.geo.rayAt(c.geo.p(-0.2, 0.1), 0);
       c.geo.rayAt(c.geo.p(-0.2, 0.1), 120);
       c.geo.arcSweep(c.geo.p(-0.2, 0.1), 0, 120, 0.6, c.geo.kindMat('genis'), 0.024);
