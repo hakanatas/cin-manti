@@ -106,6 +106,21 @@ parallel and coincident lines, complementary and supplementary angles, a
 transversal across parallels, building polygons from lines, polygon
 elements and diagonals, regular polygons, triangles by angle, and a quiz.
 
+The fourth piece is not a school lesson but a project explainer:
+**"Model neden böyle dedi?"** at `xai-opc/`. It walks through XAI-OPC, a
+study that predicts survival for 606 oropharyngeal cancer patients and then
+explains its own predictions with SHAP. Every patient is a token on a clinic
+desk: the cohort splits into training and test sets, the test set falls into
+the four boxes of a confusion matrix, a slider moves the decision threshold
+and the tokens move with it, three base models vote, SHAP weights grow as
+bars, and an independent cohort (RADCURE) shows up beside ours. It also
+carries the audit honestly — the ensemble is not significantly better than a
+lone Random Forest, chemotherapy's protective weight is confounding by
+indication, and HPV is missing from the data. All numbers come from the
+project's corrected final report.
+
+Open it at `/xai-opc/`.
+
 A landing page listing all lessons lives at `dersler/` (`/dersler/`).
 
 ## Third-party
