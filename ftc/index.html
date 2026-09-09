@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Kaynak Haritası — AG Robotik · FTC</title>
+  <meta name="description" content="FTC sezonu boyunca hangi kaynağa nereden ulaşılır? Üç katman, elli dört kaynak, aranabilir tek sayfa. AG Robotik, ALKEV Okulları." />
+  <meta name="theme-color" content="#0e2a1e" />
+  <meta property="og:title" content="FTC Kaynak Haritası — AG Robotik" />
+  <meta property="og:description" content="Oyun her yıl değişir, kaynaklar değişmez. Üç katman, 54 kaynak, aranabilir tek sayfa." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preload" href="../assets/fonts/Fraunces-Variable.ttf" as="font" type="font/ttf" crossorigin />
+  <link rel="preload" href="../assets/fonts/InstrumentSans-Variable.ttf" as="font" type="font/ttf" crossorigin />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <svg class="grain" aria-hidden="true"><filter id="grain-f"><feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="3" stitchTiles="stitch" /><feColorMatrix type="saturate" values="0" /></filter><rect width="100%" height="100%" filter="url(#grain-f)" /></svg>
+
+  <header class="nav" id="nav">
+    <a class="nav__brand" href="#top"><span class="nav__dot"></span> AG Robotik</a>
+    <nav class="nav__links" aria-label="Bölümler">
+      <a href="#katmanlar">Katmanlar</a>
+      <a href="#atlas">Atlas</a>
+      <a href="#roller">Roller</a>
+      <a href="#hafta">Bu hafta</a>
+    </nav>
+    <a class="nav__cta" href="#atlas">Kaynak ara</a>
+  </header>
+
+  <!-- ------------------------------------------------------------------ -->
+  <section class="hero" id="top">
+    <canvas class="hero__hive" id="hive" aria-hidden="true"></canvas>
+    <div class="hero__glow" aria-hidden="true"></div>
+    <div class="hero__inner">
+      <p class="eyebrow reveal" data-d="0">AG Robotik · ALKEV Okulları · BIOBUZZ 2026–2027</p>
+      <h1 class="stack" aria-label="Kaynak Haritası">
+        <span class="stack__line">
+          <span class="stack__l stack__l--3" aria-hidden="true">KAYNAK</span>
+          <span class="stack__l stack__l--2" aria-hidden="true">KAYNAK</span>
+          <span class="stack__l stack__l--1" aria-hidden="true">KAYNAK</span>
+          <span class="stack__l stack__l--0">KAYNAK</span>
+        </span>
+        <span class="stack__line stack__line--b">
+          <span class="stack__l stack__l--3" aria-hidden="true">HARİTASI</span>
+          <span class="stack__l stack__l--2" aria-hidden="true">HARİTASI</span>
+          <span class="stack__l stack__l--1" aria-hidden="true">HARİTASI</span>
+          <span class="stack__l stack__l--0">HARİTASI</span>
+        </span>
+      </h1>
+      <p class="hero__lede reveal" data-d="3">Oyun her eylülde değişir. <em>Kaynaklar değişmez.</em> Bu sayfa, sezon boyunca hangi soruyu kime soracağınızı gösterir.</p>
+      <div class="hero__actions reveal" data-d="4">
+        <a class="btn btn--gold" href="#atlas">Atlası aç</a>
+        <a class="btn" href="#katmanlar">Üç katmanı gör</a>
+      </div>
+      <dl class="hero__stats reveal" data-d="5">
+        <div><dt>Kaynak</dt><dd id="stat-count">54</dd></div>
+        <div><dt>Katman</dt><dd>3</dd></div>
+        <div><dt>Yapı sistemi</dt><dd>5</dd></div>
+        <div><dt>Turnuvaya</dt><dd>~6 ay</dd></div>
+      </dl>
+    </div>
+    <div class="hero__scroll" aria-hidden="true"><span></span>kaydır</div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track" id="marquee"></div>
+  </div>
+
+  <!-- ------------------------------------------------------------------ -->
+  <section class="split" id="ikili">
+    <div class="wrap">
+      <p class="kicker reveal">Zihin haritası</p>
+      <h2 class="h2 reveal" data-d="1">İki tür kaynak vardır</h2>
+      <p class="lede reveal" data-d="2">Hangisine ne kadar zaman ayıracağınızı bu ayrım belirler.</p>
+      <div class="split__grid">
+        <article class="panel reveal" data-d="3">
+          <p class="panel__tag">Sezonluk</p>
+          <h3 class="panel__title">Her eylülde sıfırlanır</h3>
+          <ul class="ticks">
+            <li>Competition Manual</li>
+            <li>Saha çizimleri ve elemanları</li>
+            <li>Oyuna özel Q&amp;A cevapları</li>
+            <li>Sezon ödül güncellemeleri</li>
+          </ul>
+          <p class="panel__foot">Okunur, uygulanır, sezon bitince arşive kalkar.</p>
+        </article>
+        <article class="panel panel--gold reveal" data-d="4">
+          <p class="panel__tag">Kalıcı</p>
+          <h3 class="panel__title">Yıllar boyu aynı</h3>
+          <ul class="ticks">
+            <li>Game Manual 0</li>
+            <li>FTC Docs: kontrol sistemi, vision</li>
+            <li>Java ve kontrol teorisi kaynakları</li>
+            <li>CAD kütüphaneleri, hesaplayıcılar</li>
+          </ul>
+          <p class="panel__foot">Bir kere öğrenilir, her sezon geri döner. <b>Asıl yatırım burada.</b></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <section class="layers" id="katmanlar">
+    <div class="wrap">
+      <p class="kicker reveal">Kaynak ekosistemi</p>
+      <h2 class="h2 reveal" data-d="1">Her kaynağın bir sahibi var</h2>
+      <p class="lede reveal" data-d="2">Altmış link ezberlemeyin. Üç katmanı öğrenin, linkleri kendiniz bulursunuz.</p>
+    </div>
+    <div class="stackcards" id="stackcards"></div>
+    <div class="wrap">
+      <div class="quiz reveal">
+        <p class="quiz__q">Bir kural tartışmasını hangisi bitirir?</p>
+        <div class="quiz__opts" id="quiz-opts"></div>
+        <p class="quiz__why" id="quiz-why" hidden></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <section class="atlas" id="atlas">
+    <div class="wrap">
+      <p class="kicker reveal">Atlas</p>
+      <h2 class="h2 reveal" data-d="1">Ara, bul, tıkla</h2>
+      <p class="lede reveal" data-d="2">Slayttaki link tıklanmaz. Buradaki tıklanır. Aradığınızı yazın ya da filtreleyin.</p>
+
+      <div class="search reveal" data-d="3">
+        <input type="search" id="q" placeholder="apriltag, dişli, portfolyo, sipariş…" autocomplete="off" aria-label="Kaynak ara" />
+        <span class="search__count" id="count"></span>
+      </div>
+      <div class="chips" id="chips-layer" aria-label="Katman filtresi"></div>
+      <div class="chips chips--soft" id="chips-role" aria-label="Rol filtresi"></div>
+      <div class="cards" id="cards"></div>
+      <p class="empty" id="empty" hidden>Bu aramaya uyan kaynak yok. Filtreleri temizleyip tekrar deneyin.</p>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <section class="roles" id="roller">
+    <div class="wrap">
+      <p class="kicker reveal">Ödüller ve jüri</p>
+      <h2 class="h2 reveal" data-d="1">Şampiyonluk maçtan geçmiyor</h2>
+      <p class="lede reveal" data-d="2">Bir üst seviyeye ilerlemenin ana yolu Inspire Award. Ve her ödül bir role denk geliyor: robotu süren üç kişi değil, takımın tamamı yarışıyor.</p>
+      <div class="awards" id="awards"></div>
+      <p class="note reveal">Ayrıca Promote, Compass ve Judges' Choice ödülleri ile müsabakadan gelen Winning ve Finalist Alliance var.</p>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <section class="supply" id="tedarik">
+    <div class="wrap">
+      <p class="kicker reveal">Mekanik · tedarik</p>
+      <h2 class="h2 reveal" data-d="1">Sipariş penceresi</h2>
+      <p class="lede reveal" data-d="2">Kritik parçayı turnuvadan iki hafta önce sipariş etmeyin. Kaydırıcıyı çekin, pencerenin ne zaman kapandığını görün.</p>
+      <div class="supply__box reveal" data-d="3">
+        <label class="supply__label" for="weeks">Turnuvaya kalan süre <output id="weeks-out">10 hafta</output></label>
+        <input type="range" id="weeks" min="1" max="20" value="10" />
+        <div class="supply__verdict" id="verdict"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <section class="week" id="hafta">
+    <div class="wrap">
+      <p class="kicker reveal">Bu hafta</p>
+      <h2 class="h2 reveal" data-d="1">Görevle çıkın, listeyle değil</h2>
+      <p class="lede reveal" data-d="2">Beşi de bu hafta bitecek. Toplamı bir akşam sürüyor. İşaretledikleriniz bu tarayıcıda kalır.</p>
+      <div class="week__grid">
+        <ol class="tasks" id="tasks"></ol>
+        <div class="ring reveal" data-d="3">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle cx="60" cy="60" r="52" class="ring__bg" />
+            <circle cx="60" cy="60" r="52" class="ring__fg" id="ring-fg" />
+          </svg>
+          <span class="ring__num" id="ring-num">0/5</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
+  <footer class="end">
+    <div class="wrap">
+      <p class="end__quote reveal">İyi takımlar iyi robot yapmaz —<br /><em>iyi öğrenir.</em></p>
+      <p class="end__line reveal" data-d="2">Bu sezon elimizdeki en büyük avantaj, sorunun cevabının nerede olduğunu bilmek. Gerisi çalışmak.</p>
+      <div class="end__layers reveal" data-d="3" id="end-layers"></div>
+      <p class="end__credit">AG Robotik · ALKEV Okulları · BIOBUZZ 2026–2027 · Sezon açılışı 12 Eylül 2026</p>
+    </div>
+  </footer>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

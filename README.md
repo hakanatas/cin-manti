@@ -123,6 +123,18 @@ Open it at `/xai-opc/`.
 
 A landing page listing all lessons lives at `dersler/` (`/dersler/`).
 
+## FTC resource map
+
+`ftc/` is a separate piece for a robotics team: the season-kickoff resource
+map of AG Robotik (ALKEV Okulları) as a page instead of a slide deck. The
+deck's own closing promise was that the link list would live on the team
+page, since a link on a slide cannot be clicked. It keeps the deck's green
+and honey palette and turns the reference half into an atlas: every resource
+is a card with its layer, its role and its address, searchable and
+filterable, plus sticky layer cards, an awards grid that filters the atlas,
+an order-window slider and a five-task checklist saved in the browser. All
+content lives in `ftc/js/data.js`.
+
 ## Third-party
 
 - Three.js r170 (MIT) — `vendor/three/` (see `vendor/three/LICENSE`)
