@@ -177,7 +177,9 @@ export function createDeck({ root, onOpen, onClose }) {
         for (const t of s.bullets) ul.appendChild(el('li', null, t));
         b.appendChild(ul);
       }
-      const g = el('div', `slide__cards slide__cards--${Math.min(3, Math.max(2, Math.ceil(s.names.length / 2)))}`);
+      const n = s.names.length;
+      const cols = n <= 1 ? 1 : n === 2 ? 2 : n === 3 ? 3 : n === 4 ? 2 : n <= 6 ? 3 : 4;
+      const g = el('div', `slide__cards slide__cards--${cols}${n >= 5 ? ' slide__cards--tight' : ''}`);
       for (const name of s.names) {
         const r = RESOURCES.find((x) => x.name === name);
         if (r) g.appendChild(resourceCard(r));
@@ -225,12 +227,30 @@ export function createDeck({ root, onOpen, onClose }) {
   }
 
   // --- gezinme -------------------------------------------------------------
+  let refit = () => {};
   function draw() {
     const s = SLIDES[i];
     stage.innerHTML = '';
+    const wrap = el('div', 'slide__fit');
     const slide = el('article', `slide slide--${s.kind}${s.wide ? ' slide--wide' : ''}`);
     slide.appendChild(builders[s.kind](s));
-    stage.appendChild(slide);
+    wrap.appendChild(slide);
+    stage.appendChild(wrap);
+    // hiçbir slayt kaydırma gerektirmesin: taşarsa son çare olarak ölçekle
+    refit = () => {
+      slide.style.transform = 'none';
+      wrap.style.height = '';
+      const h = slide.offsetHeight;
+      const avail = stage.clientHeight - 12;
+      if (h > avail + 2) {
+        const k = Math.max(0.55, avail / h);
+        slide.style.transformOrigin = 'top center';
+        slide.style.transform = `scale(${k})`;
+        wrap.style.height = `${h * k}px`;
+      }
+    };
+    requestAnimationFrame(refit);
+    setTimeout(refit, 260);
     if (!reduced) {
       slide.animate(
         [
@@ -330,6 +350,10 @@ export function createDeck({ root, onOpen, onClose }) {
     const dx = e.clientX - sx;
     const dy = e.clientY - sy;
     if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.6) go(dx < 0 ? i + 1 : i - 1);
+  });
+
+  window.addEventListener('resize', () => {
+    if (open) refit();
   });
 
   window.addEventListener('keydown', (e) => {
