@@ -91,6 +91,22 @@ export const RESOURCES = [
     url: 'https://ftc-docs.firstinspires.org',
   },
   {
+    name: 'FTC Docs · SDK',
+    layer: 'resmi',
+    roles: ['yazilim'],
+    kind: 'sezonluk',
+    desc: 'Robot Controller yazılımı, sürüm güncellemeleri, bilgisayar gereksinimleri. Sezon başında bir kez bakılır, sürüm uyuşmazlığı derdi biter.',
+    url: 'https://ftc-docs.firstinspires.org',
+  },
+  {
+    name: 'FTC Docs · CAD ve üretim',
+    layer: 'resmi',
+    roles: ['cad', 'mekanik'],
+    kind: 'kalici',
+    desc: 'Resmî tasarım kaynakları ve parça imalat teknikleri.',
+    url: 'https://ftc-docs.firstinspires.org',
+  },
+  {
     name: 'FTC Docs · Vision',
     layer: 'resmi',
     roles: ['yazilim'],
@@ -141,6 +157,30 @@ export const RESOURCES = [
     kind: 'kalici',
     desc: 'Tüm ekosistemin küratörlü link listesi. Bu sayfanın uzun hâli diyebilirsiniz.',
     url: 'https://gm0.org/en/latest/docs/useful-links.html',
+  },
+  {
+    name: 'gm0 · Getting Started in FTC',
+    layer: 'dokuman',
+    roles: ['kural', 'odul'],
+    kind: 'kalici',
+    desc: 'Takım kurma, sezon akışı, roller. Bu haftanın ikinci ödevi tam olarak bu bölüm.',
+    url: 'https://gm0.org/en/latest/docs/getting-started-in-ftc.html',
+  },
+  {
+    name: 'gm0 · Mechanical Design',
+    layer: 'dokuman',
+    roles: ['mekanik'],
+    kind: 'kalici',
+    desc: 'Şasi tipleri, güç aktarımı, mekanizmalar. Mekanik ekibin ana okuma listesi.',
+    url: 'https://gm0.org',
+  },
+  {
+    name: 'gm0 · Software Concepts',
+    layer: 'dokuman',
+    roles: ['yazilim'],
+    kind: 'kalici',
+    desc: 'Programlama kavramları ve yapılar; kütüphaneye geçmeden önce okunacak bölüm.',
+    url: 'https://gm0.org',
   },
   {
     name: 'gm0 · Kit and Hardware Guide',
@@ -236,7 +276,7 @@ export const RESOURCES = [
     roles: ['mekanik'],
     kind: 'kalici',
     star: true,
-    desc: 'Şasi hızı, motor akımı, mekanizma yükü hesaplayıcıları. Tasarım kararını tahminden alıp sayıya bağlar.',
+    desc: "Şasi hızı, motor akımı, mekanizma yükü hesaplayıcıları. Mekanik ekibin ilk refleksi 'deneyip görelim' değil 'önce hesaplayalım' olmalı.",
     url: '',
   },
   {
@@ -502,6 +542,13 @@ export const RESOURCES = [
     desc: 'Ham malzeme ve hırdavat. Ölçü ve teknik çizim kalitesiyle ayrı bir referans.',
     url: 'https://www.mcmaster.com',
   },
+];
+
+/** Sezonun açıldığı gün — slayt 2. */
+export const KICKOFF = [
+  { big: '12 Eyl', label: 'Oyun tanıtımı ve Competition Manual yayını' },
+  { big: '19.00', label: 'Türkiye saatiyle kickoff yayın saati' },
+  { big: '~6 ay', label: 'Turnuvalara kadar elimizdeki süre' },
 ];
 
 /** Yazılımın üç yolu — slayt 9. */

@@ -1,4 +1,5 @@
-import { LAYERS, ROLES, RESOURCES, AWARDS, TASKS, SUPPLY } from './data.js';
+import { LAYERS, ROLES, RESOURCES, AWARDS, TASKS, SUPPLY, PATHS, KICKOFF } from './data.js';
+import { createDeck } from './present.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -433,6 +434,36 @@ function magnetic(sel) {
   });
 }
 
+/** Slayt 2: sezonun açıldığı gün. */
+function facts() {
+  const host = $('#facts');
+  if (!host) return;
+  KICKOFF.forEach((f, i) => {
+    const el = document.createElement('div');
+    el.className = 'fact reveal';
+    el.dataset.d = String(3 + i * 0.4);
+    el.innerHTML = `<b>${f.big}</b><span>${f.label}</span>`;
+    host.appendChild(el);
+  });
+}
+
+/** Slayt 9: yazılımın üç yolu. */
+function paths() {
+  const host = $('#paths');
+  if (!host) return;
+  PATHS.forEach((p, i) => {
+    const el = document.createElement('div');
+    el.className = 'path reveal';
+    el.dataset.d = String(3 + i * 0.5);
+    el.innerHTML = `
+      <span class="path__no">${p.no}</span>
+      <h3 class="path__name">${p.name}</h3>
+      <p class="path__line">${p.line}</p>
+      <span class="path__when">${p.when}</span>`;
+    host.appendChild(el);
+  });
+}
+
 function endLayers() {
   const host = $('#end-layers');
   Object.values(LAYERS).forEach((l) => {
@@ -455,7 +486,32 @@ awards(api);
 supply();
 week(api);
 endLayers();
+facts();
+paths();
 counters();
 magnetic('#cards');
 magnetic('#awards');
 attachReveals();
+
+// ---------------------------------------------------------------------------
+// Sunum modu
+// ---------------------------------------------------------------------------
+const deck = createDeck({
+  root: $('#deck'),
+  onClose: () => attachReveals(),
+});
+$('#btn-present').addEventListener('click', () => deck.open(0));
+window.addEventListener('keydown', (e) => {
+  if (deck.isOpen()) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target instanceof HTMLElement && e.target.matches('input, textarea, select')) return;
+  if (e.key === 'p' || e.key === 'P') deck.open(0);
+});
+// ?sunum=1 ile doğrudan sunumu aç, ?slayt=N ile o slayttan başla
+{
+  const params = new URLSearchParams(location.search);
+  if (params.has('sunum') || params.has('slayt')) {
+    const at = Math.max(0, (Number(params.get('slayt')) || 1) - 1);
+    deck.open(Math.min(at, deck.count - 1));
+  }
+}

@@ -25,7 +25,10 @@
       <a href="#roller">Roller</a>
       <a href="#hafta">Bu hafta</a>
     </nav>
-    <a class="nav__cta" href="#atlas">Kaynak ara</a>
+    <div class="nav__right">
+      <button class="nav__present" id="btn-present" type="button" title="Sunum modu (P)"><span class="nav__play"></span> Sunum modu</button>
+      <a class="nav__cta" href="#atlas">Kaynak ara</a>
+    </div>
   </header>
 
   <!-- ------------------------------------------------------------------ -->
@@ -67,6 +70,17 @@
   <div class="marquee" aria-hidden="true">
     <div class="marquee__track" id="marquee"></div>
   </div>
+
+  <!-- ------------------------------------------------------------------ -->
+  <section class="today" id="bugun">
+    <div class="wrap">
+      <p class="kicker reveal">Bugün neredeyiz</p>
+      <h2 class="h2 reveal" data-d="1">Sezon bugün açıldı</h2>
+      <p class="lede reveal" data-d="2">Yani bu sayfa bir kütüphane turu değil, bu haftanın yol haritası.</p>
+      <div class="facts" id="facts"></div>
+      <p class="callout reveal" data-d="4"><b>Oyun her yıl değişir, kaynaklar değişmez.</b> BIOBUZZ'ın kuralları bu sezona özel. Ama burada öğrendiğiniz kaynak haritası, nereye bakılır, kime sorulur, hangi doküman okunur, mezun olana kadar aynı kalacak. Asıl yatırımı oraya yapın.</p>
+    </div>
+  </section>
 
   <!-- ------------------------------------------------------------------ -->
   <section class="split" id="ikili">
@@ -119,20 +133,33 @@
   </section>
 
   <!-- ------------------------------------------------------------------ -->
+  <section class="paths" id="yazilim">
+    <div class="wrap">
+      <p class="kicker reveal">Yazılım</p>
+      <h2 class="h2 reveal" data-d="1">Üç programlama yolu, tek yolculuk</h2>
+      <p class="lede reveal" data-d="2">Hepsi aynı robotu sürer. Fark, ne kadar kontrol istediğinizde. Kimse Android Studio'dan başlamak zorunda değil, ama sezon ortasında oraya geçiyoruz.</p>
+      <div class="paths__grid" id="paths"></div>
+      <p class="note reveal" data-d="4">Java'yı sıfırdan öğrenmek için: <b>Learn Java for FTC</b>, <b>REV Introduction to Programming</b> ve <b>FtcRobotController</b> deposu. Üçü de aşağıdaki atlasta.</p>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------------ -->
   <section class="atlas" id="atlas">
     <div class="wrap">
       <p class="kicker reveal">Atlas</p>
       <h2 class="h2 reveal" data-d="1">Ara, bul, tıkla</h2>
       <p class="lede reveal" data-d="2">Slayttaki link tıklanmaz. Buradaki tıklanır. Aradığınızı yazın ya da filtreleyin.</p>
 
-      <div class="search reveal" data-d="3">
-        <input type="search" id="q" placeholder="apriltag, dişli, portfolyo, sipariş…" autocomplete="off" aria-label="Kaynak ara" />
-        <span class="search__count" id="count"></span>
+      <div id="atlas-host">
+        <div class="search reveal" data-d="3">
+          <input type="search" id="q" placeholder="apriltag, dişli, portfolyo, sipariş…" autocomplete="off" aria-label="Kaynak ara" />
+          <span class="search__count" id="count"></span>
+        </div>
+        <div class="chips" id="chips-layer" aria-label="Katman filtresi"></div>
+        <div class="chips chips--soft" id="chips-role" aria-label="Rol filtresi"></div>
+        <div class="cards" id="cards"></div>
+        <p class="empty" id="empty" hidden>Bu aramaya uyan kaynak yok. Filtreleri temizleyip tekrar deneyin.</p>
       </div>
-      <div class="chips" id="chips-layer" aria-label="Katman filtresi"></div>
-      <div class="chips chips--soft" id="chips-role" aria-label="Rol filtresi"></div>
-      <div class="cards" id="cards"></div>
-      <p class="empty" id="empty" hidden>Bu aramaya uyan kaynak yok. Filtreleri temizleyip tekrar deneyin.</p>
     </div>
   </section>
 
@@ -152,11 +179,13 @@
     <div class="wrap">
       <p class="kicker reveal">Mekanik · tedarik</p>
       <h2 class="h2 reveal" data-d="1">Sipariş penceresi</h2>
-      <p class="lede reveal" data-d="2">Kritik parçayı turnuvadan iki hafta önce sipariş etmeyin. Kaydırıcıyı çekin, pencerenin ne zaman kapandığını görün.</p>
+      <p class="lede reveal" data-d="2">Starter kit sadece giriş kapısı: FTC'de <b>beş yapı sistemi</b> legal ve sahada yan yana yarışıyor. Seçimi marka sadakati değil elinizdeki parça, bütçe ve teslim süresi belirler. Ve kritik parçayı turnuvadan iki hafta önce sipariş etmeyin: kaydırıcıyı çekin, pencerenin ne zaman kapandığını görün.</p>
+      <div id="supply-host">
       <div class="supply__box reveal" data-d="3">
         <label class="supply__label" for="weeks">Turnuvaya kalan süre <output id="weeks-out">10 hafta</output></label>
         <input type="range" id="weeks" min="1" max="20" value="10" />
         <div class="supply__verdict" id="verdict"></div>
+      </div>
       </div>
     </div>
   </section>
@@ -167,7 +196,7 @@
       <p class="kicker reveal">Bu hafta</p>
       <h2 class="h2 reveal" data-d="1">Görevle çıkın, listeyle değil</h2>
       <p class="lede reveal" data-d="2">Beşi de bu hafta bitecek. Toplamı bir akşam sürüyor. İşaretledikleriniz bu tarayıcıda kalır.</p>
-      <div class="week__grid">
+      <div class="week__grid" id="tasks-host">
         <ol class="tasks" id="tasks"></ol>
         <div class="ring reveal" data-d="3">
           <svg viewBox="0 0 120 120" aria-hidden="true">
@@ -189,6 +218,8 @@
       <p class="end__credit">AG Robotik · ALKEV Okulları · BIOBUZZ 2026–2027 · Sezon açılışı 12 Eylül 2026</p>
     </div>
   </footer>
+
+  <div class="deck" id="deck" hidden aria-hidden="true"></div>
 
   <script type="module" src="./js/main.js"></script>
 </body>
